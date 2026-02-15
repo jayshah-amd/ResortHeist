@@ -923,6 +923,39 @@ input, select, textarea, button {
     border-radius: var(--radius-md);
 }
 
+/* ==================== RIDDLE BOX ==================== */
+.riddle-box {
+    background: linear-gradient(135deg, rgba(34, 211, 238, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+    border: 1px solid rgba(34, 211, 238, 0.3);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    position: relative;
+}
+
+.riddle-box::before,
+.riddle-box::after {
+    content: '"';
+    font-size: 2rem;
+    color: var(--accent);
+    opacity: 0.3;
+    position: absolute;
+}
+
+.riddle-box::before {
+    top: 0.25rem;
+    left: 0.5rem;
+}
+
+.riddle-box::after {
+    bottom: -0.5rem;
+    right: 0.5rem;
+}
+
+.riddle-box p {
+    position: relative;
+    z-index: 1;
+}
+
 /* ==================== DUAL PUZZLE LAYOUT ==================== */
 .dual-puzzle-grid {
     display: flex;
@@ -1124,6 +1157,37 @@ input, select, textarea, button {
     border-radius: 50%;
     background: var(--success);
     animation: pulse 2s infinite;
+}
+
+/* ==================== HEADER BUTTONS ==================== */
+.header-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.header-btn:active {
+    transform: scale(0.95);
+}
+
+/* Reset Button */
+.reset-btn {
+    background: rgba(107, 114, 128, 0.2);
+    border-color: rgba(107, 114, 128, 0.3);
+    color: var(--text-muted);
+}
+
+.reset-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: var(--danger);
 }
 
 /* ==================== HINT BUTTON ==================== */

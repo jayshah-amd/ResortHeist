@@ -58,6 +58,10 @@ function initializeScreen(screenId) {
             // Warning screen - nothing special
             break;
             
+        case 'chase-briefing':
+            startChaseBriefing();
+            break;
+            
         case 'teams':
             // Team selection screen
             break;
@@ -548,6 +552,13 @@ function updateInvestigationUI() {
             const allSolved = lb1Solved && lb2Solved;
             
             puzzleContent.innerHTML = `
+                <!-- Lockbox riddle above both cards -->
+                <div class="riddle-box mb-md">
+                    <p class="text-accent text-sm font-mono italic text-center">
+                        "Two homes come together to form one.<br>One home was built to combine two."
+                    </p>
+                </div>
+                
                 <div class="dual-puzzle-grid">
                     <!-- Lockbox 1 -->
                     <div class="puzzle-card ${lb1Solved ? 'solved' : ''}">
@@ -616,7 +627,7 @@ function updateInvestigationUI() {
                     <div class="mt-md text-center">
                         <p class="text-success font-bold mb-sm">✓ THIEF IDENTIFIED!</p>
                         <button id="btn-continue-to-chase" class="btn btn-success">
-                            Begin the Chase →
+                            Continue
                         </button>
                     </div>
                 ` : ''}
@@ -1062,6 +1073,183 @@ function showAnswerFeedback(type, message) {
     }
 }
 
+// ==================== CHASE BRIEFING ====================
+let briefingTyped = null;
+let briefingStep = 0;
+
+function startChaseBriefing() {
+    const content = document.getElementById('briefing-content');
+    const continueBtn = document.getElementById('btn-briefing-continue');
+    
+    if (!content) return;
+    
+    // Reset briefing state
+    briefingStep = 0;
+    content.innerHTML = '';
+    continueBtn.classList.add('hidden');
+    
+    // Show first briefing screen
+    showBriefingStep();
+    
+    // Setup continue button
+    continueBtn.addEventListener('click', handleBriefingContinue);
+}
+
+function handleBriefingContinue() {
+    briefingStep++;
+    
+    if (briefingStep >= 4) {
+        // All briefing complete, go to team selection
+        playSound('start');
+        showScreen('teams');
+    } else {
+        // Show next briefing step
+        playSound('click');
+        showBriefingStep();
+    }
+}
+
+function showBriefingStep() {
+    const content = document.getElementById('briefing-content');
+    const continueBtn = document.getElementById('btn-briefing-continue');
+    
+    // Clear previous content
+    content.innerHTML = '';
+    continueBtn.classList.add('hidden');
+    
+    // Clear any existing typed instance
+    if (briefingTyped) {
+        briefingTyped.destroy();
+        briefingTyped = null;
+    }
+    
+    // Get remaining time
+    const timeRemaining = window.TimerSystem ? window.TimerSystem.formatTime(window.GameEngine.gameState.investigationTimeLeft) : '??:??';
+    
+    switch (briefingStep) {
+        case 0:
+            // Screen 1: Congratulations with typewriter
+            showBriefingWithTypewriter(
+                `You figured it out with only <span class="text-success font-bold">${timeRemaining}</span> remaining. Nicely done. You worked together as a team and solved the mystery.\n\n\nBut we're not done yet...`,
+                content,
+                continueBtn
+            );
+            break;
+            
+        case 1:
+            // Screen 2: Chase explanation with typewriter
+            showBriefingWithTypewriter(
+                `Now you have to find me. I'm somewhere on the resort hiding. All you have to do is find me and take a clear picture of me with my face in it and send it to the WhatsApp group chat. I'll validate them and the first team with a valid picture wins a cash prize for their team leader to spend on the other's wedding gift.`,
+                content,
+                continueBtn
+            );
+            break;
+            
+        case 2:
+            // Screen 3: Rules (static, no animation)
+            showRulesScreen(content, continueBtn);
+            break;
+            
+        case 3:
+            // Screen 4: Final note with typewriter
+            showBriefingWithTypewriter(
+                `Remember: this is basically hide and seek, not really tag. Joice has no idea where I'll be hiding, she's now just as much of a player as any of you are.\n\n\nGood luck.`,
+                content,
+                continueBtn
+            );
+            break;
+    }
+}
+
+function showBriefingWithTypewriter(message, content, continueBtn) {
+    const messageContainer = document.createElement('div');
+    messageContainer.className = 'text-accent text-sm leading-relaxed';
+    content.appendChild(messageContainer);
+    
+    let typingComplete = false;
+    
+    // Convert newlines to br tags for display
+    const displayMessage = message.replace(/\n/g, '<br>');
+    
+    briefingTyped = new Typed(messageContainer, {
+        strings: [displayMessage],
+        typeSpeed: 15,
+        showCursor: true,
+        cursorChar: '█',
+        onComplete: () => {
+            typingComplete = true;
+            continueBtn.classList.remove('hidden');
+            playSound('reveal');
+        }
+    });
+    
+    // Add tap/click to skip typing animation
+    const skipHandler = (e) => {
+        // Don't skip if clicking the continue button
+        if (e.target === continueBtn || continueBtn.contains(e.target)) return;
+        
+        if (!typingComplete && briefingTyped) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            typingComplete = true;
+            briefingTyped.destroy();
+            briefingTyped = null;
+            
+            messageContainer.innerHTML = displayMessage;
+            continueBtn.classList.remove('hidden');
+            playSound('reveal');
+            
+            document.removeEventListener('click', skipHandler, true);
+            document.removeEventListener('touchstart', skipHandler, true);
+        }
+    };
+    
+    setTimeout(() => {
+        document.addEventListener('click', skipHandler, true);
+        document.addEventListener('touchstart', skipHandler, true);
+        
+        const cleanup = setInterval(() => {
+            if (typingComplete) {
+                document.removeEventListener('click', skipHandler, true);
+                document.removeEventListener('touchstart', skipHandler, true);
+                clearInterval(cleanup);
+            }
+        }, 100);
+    }, 300);
+}
+
+function showRulesScreen(content, continueBtn) {
+    // Rules screen - no animation, instant display
+    content.innerHTML = `
+        <div class="mb-md">
+            <h3 class="text-danger font-bold text-lg text-center mb-md">📋 RULES</h3>
+            
+            <ol class="rules-list text-sm text-gray-300 leading-relaxed">
+                <li class="mb-sm">
+                    <span class="text-accent font-bold">1.</span> Watch where you're going. Don't forget there are kids around and it can be slippery so be careful.
+                </li>
+                <li class="mb-sm">
+                    <span class="text-accent font-bold">2.</span> I won't go anywhere that is inaccessible to anyone. That means no washrooms and no personal rooms.
+                </li>
+                <li class="mb-sm">
+                    <span class="text-accent font-bold">3.</span> I will be moving around to avoid making this too easy on you guys.
+                </li>
+                <li class="mb-sm">
+                    <span class="text-accent font-bold">4.</span> I won't go off resort.
+                </li>
+                <li>
+                    <span class="text-accent font-bold">5.</span> You have <span class="text-warning font-bold">20 minutes</span>.
+                </li>
+            </ol>
+        </div>
+    `;
+    
+    // Show continue button immediately for rules
+    continueBtn.classList.remove('hidden');
+    playSound('reveal');
+}
+
 // ==================== VICTORY SCREEN ====================
 function showVictoryStats() {
     const stats = window.GameEngine.calculateStats();
@@ -1339,6 +1527,53 @@ function setupEventListeners() {
             handleHintRequest();
         });
     }
+    
+    // Reset Game Button
+    const resetBtn = document.getElementById('btn-reset-game');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            showResetConfirmation();
+        });
+    }
+}
+
+// Show reset confirmation modal
+function showResetConfirmation() {
+    playSound('click');
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content text-center">
+            <h3 class="text-danger font-mono text-lg mb-4">🔄 Reset Game?</h3>
+            <p class="text-gray-300 text-sm mb-2">
+                This will clear all progress and start fresh.
+            </p>
+            <p class="text-gray-400 text-xs mb-4 italic">
+                Your timer, solved puzzles, and all stats will be lost.
+            </p>
+            <div class="flex flex-col gap-sm">
+                <button id="btn-confirm-reset" class="btn btn-danger">
+                    Yes, Reset Everything
+                </button>
+                <button id="btn-cancel-reset" class="btn btn-ghost">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    document.getElementById('btn-confirm-reset').addEventListener('click', () => {
+        // Clear localStorage and reload
+        localStorage.removeItem('caseFile7734');
+        window.location.reload();
+    });
+    
+    document.getElementById('btn-cancel-reset').addEventListener('click', () => {
+        modal.remove();
+    });
 }
 
 function checkBothTeamsReady() {
@@ -1486,11 +1721,28 @@ function handleAnswerSubmit() {
 
 // Main hint button handler - determines which hint flow to show based on phase
 function handleHintRequest() {
-    const { gameState, getCurrentPhase, PUZZLES, isHintUsed } = window.GameEngine;
+    const { gameState, getCurrentPhase, PUZZLES, isHintUsed, saveState } = window.GameEngine;
     const phase = getCurrentPhase();
     
     playSound('click');
     
+    // Show explainer modal on first hint click
+    if (!gameState.hintExplainerShown) {
+        showHintExplainer(() => {
+            // After explainer, continue with normal hint flow
+            gameState.hintExplainerShown = true;
+            saveState();
+            continueHintFlow(phase, gameState, PUZZLES, isHintUsed);
+        });
+        return;
+    }
+    
+    // Normal hint flow
+    continueHintFlow(phase, gameState, PUZZLES, isHintUsed);
+}
+
+// Continue with the actual hint request after explainer
+function continueHintFlow(phase, gameState, PUZZLES, isHintUsed) {
     // Phase 3 has no hints
     if (gameState.currentPhase === 'phase3') {
         showNoHintAvailable();
@@ -1508,11 +1760,57 @@ function handleHintRequest() {
         return;
     }
     
-    // Phase 2 and Lockbox - ask for puzzle number
-    if (phase.isTriplePuzzle || phase.isLockboxPuzzle) {
+    // Lockbox - single shared hint for both lockboxes
+    if (phase.isLockboxPuzzle) {
+        if (isHintUsed('lockbox_shared')) {
+            showHintAlreadyUsed(PUZZLES['lockbox1'].hint);
+        } else {
+            showLockboxHintConfirm();
+        }
+        return;
+    }
+    
+    // Phase 2 - ask for puzzle number
+    if (phase.isTriplePuzzle) {
         showPuzzleNumberInput();
         return;
     }
+}
+
+// Show hint system explainer on first use
+function showHintExplainer(callback) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content text-center">
+            <h3 class="text-accent font-mono text-lg mb-4">💡 The Hint System</h3>
+            <div class="text-gray-300 text-sm mb-4 text-left leading-relaxed">
+                <p class="mb-2">
+                    I've numbered most of the physical puzzles in preparation for your inevitable lack of critical thinking skills.
+                </p>
+                <p class="mb-2">
+                    When you press this button, enter the <span class="text-accent font-bold">number</span> of the puzzle you're struggling with. I know sharing a single brain cell is difficult.
+                </p>
+                <p class="mb-2 text-warning">
+                    ⚠️ First viewing of each hint costs <span class="font-bold">30 seconds</span>. View again for free.
+                </p>
+                <p class="text-gray-500 text-xs italic">
+                    Not every puzzle has a hint. Can't make things too easy for you.
+                </p>
+            </div>
+            <button id="btn-got-it-hints" class="w-full btn btn-primary">
+                Got It
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    document.getElementById('btn-got-it-hints').addEventListener('click', () => {
+        playSound('click');
+        modal.remove();
+        callback();
+    });
 }
 
 // Show "No hints available" for Phase 3
@@ -1594,6 +1892,60 @@ function showPhase1HintConfirm() {
         
         // Show the actual hint
         const hint = PUZZLES['location1'].hint;
+        modal.innerHTML = `
+            <div class="modal-content text-center">
+                <h3 class="text-accent font-mono text-lg mb-4">💡 HINT</h3>
+                <p class="text-white text-lg mb-4">${hint}</p>
+                <button id="btn-close-hint" class="w-full btn btn-ghost">
+                    Got It
+                </button>
+            </div>
+        `;
+        
+        document.getElementById('btn-close-hint').addEventListener('click', () => {
+            modal.remove();
+        });
+    });
+    
+    document.getElementById('btn-decline-hint').addEventListener('click', () => {
+        modal.remove();
+    });
+}
+
+// Lockbox: Simple confirmation for shared lockbox hint
+function showLockboxHintConfirm() {
+    const { PUZZLES, applyPenalty, markHintUsed, CONFIG } = window.GameEngine;
+    const hintCost = CONFIG.PENALTIES.HINT_COST;
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content text-center">
+            <h3 class="text-accent font-mono text-lg mb-4">💡 Need a Hint for the Lockboxes?</h3>
+            <p class="text-gray-400 text-sm mb-4">
+                This will cost you <span class="text-danger font-bold">${hintCost} seconds</span>.
+            </p>
+            <p class="text-gray-500 text-xs mb-4">Are you sure?</p>
+            <div class="flex flex-col gap-sm">
+                <button id="btn-accept-hint" class="btn btn-primary">
+                    Yes, Show Hint (-${hintCost}s)
+                </button>
+                <button id="btn-decline-hint" class="btn btn-ghost">
+                    No Thanks
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    document.getElementById('btn-accept-hint').addEventListener('click', () => {
+        applyPenalty('hint');
+        markHintUsed('lockbox_shared');
+        playSound('reveal');
+        
+        // Show the actual hint (shared for both lockboxes)
+        const hint = PUZZLES['lockbox1'].hint;
         modal.innerHTML = `
             <div class="modal-content text-center">
                 <h3 class="text-accent font-mono text-lg mb-4">💡 HINT</h3>
@@ -1697,7 +2049,12 @@ function showPuzzleHintConfirm(puzzleNumber) {
     
     // Check if hint already used
     if (isHintUsed(puzzle.id)) {
-        showHintAlreadyUsed(puzzle.hint);
+        // For hints with links, show the special display
+        if (puzzle.hintHasLink) {
+            showHintWithLink(puzzle, puzzleNumber, true);
+        } else {
+            showHintAlreadyUsed(puzzle.hint);
+        }
         return;
     }
     
@@ -1731,24 +2088,108 @@ function showPuzzleHintConfirm(puzzleNumber) {
         markHintUsed(puzzle.id);
         playSound('reveal');
         
-        // Show the actual hint
-        modal.innerHTML = `
-            <div class="modal-content text-center">
-                <h3 class="text-accent font-mono text-lg mb-4">💡 HINT - ${puzzleType} #${puzzleNumber}</h3>
-                <p class="text-white text-lg mb-4">${puzzle.hint}</p>
-                <button id="btn-close-hint" class="w-full btn btn-ghost">
-                    Got It
-                </button>
-            </div>
-        `;
-        
-        document.getElementById('btn-close-hint').addEventListener('click', () => {
+        // Check if this hint has a special link that needs share functionality
+        if (puzzle.hintHasLink) {
             modal.remove();
-        });
+            showHintWithLink(puzzle, puzzleNumber, false);
+        } else {
+            // Show the regular hint
+            modal.innerHTML = `
+                <div class="modal-content text-center">
+                    <h3 class="text-accent font-mono text-lg mb-4">💡 HINT - ${puzzleType} #${puzzleNumber}</h3>
+                    <p class="text-white text-lg mb-4">${puzzle.hint}</p>
+                    <button id="btn-close-hint" class="w-full btn btn-ghost">
+                        Got It
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('btn-close-hint').addEventListener('click', () => {
+                modal.remove();
+            });
+        }
     });
     
     document.getElementById('btn-decline-hint').addEventListener('click', () => {
         modal.remove();
+    });
+}
+
+// Show hint with share link functionality
+function showHintWithLink(puzzle, puzzleNumber, alreadyUsed) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content text-center">
+            <h3 class="text-accent font-mono text-lg mb-4">💡 HINT - Puzzle #${puzzleNumber}</h3>
+            ${alreadyUsed ? '<p class="text-gray-500 text-xs mb-2">(Already used - no penalty)</p>' : ''}
+            <p class="text-white text-sm mb-4 leading-relaxed">${puzzle.hint}</p>
+            <div class="flex flex-col gap-sm">
+                <button id="btn-share-hint-link" class="btn btn-success">
+                    📱 Share Link via WhatsApp
+                </button>
+                <button id="btn-open-hint-link" class="btn btn-ghost text-sm">
+                    Open Link Directly
+                </button>
+                <button id="btn-close-hint" class="btn btn-ghost">
+                    Got It
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Share via WhatsApp
+    document.getElementById('btn-share-hint-link').addEventListener('click', () => {
+        const shareText = `📦 Puzzle Box Guide: ${puzzle.hintShareUrl}`;
+        const encoded = encodeURIComponent(shareText);
+        window.open(`https://wa.me/?text=${encoded}`, '_blank');
+        playSound('click');
+    });
+    
+    // Open link directly - with warning
+    document.getElementById('btn-open-hint-link').addEventListener('click', () => {
+        showLinkWarning(puzzle.hintShareUrl, modal);
+    });
+    
+    document.getElementById('btn-close-hint').addEventListener('click', () => {
+        modal.remove();
+    });
+}
+
+// Show warning before opening external link
+function showLinkWarning(url, parentModal) {
+    parentModal.innerHTML = `
+        <div class="modal-content text-center">
+            <h3 class="text-warning font-mono text-lg mb-4">⚠️ Warning</h3>
+            <p class="text-gray-300 text-sm mb-2">
+                Opening this link will take you away from the game.
+            </p>
+            <p class="text-danger text-sm mb-4 font-bold">
+                You might come back to a reset game!
+            </p>
+            <p class="text-gray-400 text-xs mb-4 italic">
+                We recommend sharing the link instead so someone else can look it up.
+            </p>
+            <div class="flex flex-col gap-sm">
+                <button id="btn-open-anyway" class="btn btn-danger">
+                    Open Anyway
+                </button>
+                <button id="btn-cancel-link" class="btn btn-ghost">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('btn-open-anyway').addEventListener('click', () => {
+        window.open(url, '_blank');
+        parentModal.remove();
+    });
+    
+    document.getElementById('btn-cancel-link').addEventListener('click', () => {
+        parentModal.remove();
     });
 }
 

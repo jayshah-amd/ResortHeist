@@ -110,6 +110,20 @@ const PUZZLES = {
         evidence: 'Puzzle 3 solved'
     },
     
+    puzzle6: {
+        id: 'puzzle6',
+        phase: 2,
+        puzzleNumber: 6,
+        title: 'Puzzle 6',
+        description: '', // Physical puzzle - no description needed
+        hint: 'Share this product <a href="https://ikeelo.com/products/ikeelo-money-maze-puzzle-box-2-pack" target="_blank" class="text-accent underline">link</a> to someone else so you don\'t accidentally close the game. It has the guide for how to open the box.',
+        hintHasLink: true, // Flag for special handling
+        hintShareUrl: 'https://ikeelo.com/products/ikeelo-money-maze-puzzle-box-2-pack',
+        answers: [], // This puzzle might not have an answer if it's just instructions
+        thiefReaction: null,
+        evidence: null
+    },
+    
     // Phase 2.5 - Lockbox codes
     lockbox1: {
         id: 'lockbox1',
@@ -157,7 +171,8 @@ const PUZZLE_NUMBER_MAP = {
     phase2: {
         1: 'puzzle1',
         2: 'puzzle2',
-        3: 'puzzle3'
+        3: 'puzzle3',
+        6: 'puzzle6'
     },
     lockbox: {
         1: 'lockbox1',
@@ -226,7 +241,7 @@ const PHASES = {
         name: 'The Lockboxes',
         puzzles: ['lockbox1', 'lockbox2'],
         unlocked: false,
-        thiefMessage: "I'm impressed you've gotten this far. You're getting close.\n\nYou might have noticed that each room has a lockbox in it. Your riddle to solve these codes are as follows:\n\n\"Two homes come together to form one.\nOne home was built to combine two.\"",
+        thiefMessage: "I'm impressed you've gotten this far. You're getting close.\n\nYou might have noticed that each room has a lockbox in it. Solve the riddle below to unlock them.",
         isLockboxPuzzle: true, // Special flag for lockbox display
         showContinue: true,
         nextPhase: 'phase3'
@@ -310,6 +325,7 @@ let gameState = {
     
     // Hint tracking - which puzzles have had their hints revealed
     usedHints: [], // Array of puzzle IDs that have had hints shown
+    hintExplainerShown: false, // Track if hint system explainer has been shown
     
     // Brute force protection
     recentAttempts: [], // timestamps
@@ -471,9 +487,9 @@ function advancePhase() {
     gameState.recentAttempts = []; // Clear rate limiting for new phase
     
     if (nextPhaseId === 'chase') {
-        // Transition to chase mode
-        console.log('🔧 Transitioning to chase mode');
-        initiateChaseMode();
+        // Go to chase briefing first (explains rules before team selection)
+        console.log('🔧 Transitioning to chase briefing');
+        showScreen('chase-briefing');
     } else if (PHASES[nextPhaseId]) {
         PHASES[nextPhaseId].unlocked = true;
         gameState.currentPhase = nextPhaseId;

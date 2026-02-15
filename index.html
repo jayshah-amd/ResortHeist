@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#0f0f1a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Case #7734 | Investigation</title>
+    <title>Case #216-223 | Investigation</title>
     
     <!-- Preconnect for fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -76,7 +76,8 @@
         <!-- ==================== INVESTIGATION ==================== -->
         <div id="screen-investigation" class="screen hidden">
             <div class="investigation-header">
-                <span class="case-badge">CASE #7734</span>
+                <button id="btn-reset-game" class="header-btn reset-btn" title="Reset game">🔄</button>
+                <span class="case-badge">CASE #216-223</span>
                 <span id="timer-display" class="timer-display">45:00</span>
                 <button id="btn-hint" class="hint-btn" title="Get a hint">💡</button>
             </div>
@@ -133,6 +134,25 @@
             
             <button id="btn-understand-warning" class="btn btn-danger mt-auto" style="max-width: 280px;">
                 I Understand, Continue
+            </button>
+        </div>
+
+        <!-- ==================== CHASE BRIEFING ==================== -->
+        <div id="screen-chase-briefing" class="screen hidden">
+            <div class="terminal-window" style="flex: 1; max-height: none;">
+                <div class="terminal-header">
+                    <span class="terminal-dot" style="background: #ef4444;"></span>
+                    <span class="terminal-dot" style="background: #f59e0b;"></span>
+                    <span class="terminal-dot" style="background: #22c55e;"></span>
+                    <span class="text-muted text-xs" style="margin-left: auto;">thief_transmission.exe</span>
+                </div>
+                <div id="briefing-content" class="terminal-content" style="flex: 1; overflow-y: auto;">
+                    <!-- Briefing content injected by JS -->
+                </div>
+            </div>
+            
+            <button id="btn-briefing-continue" class="btn btn-primary mt-md hidden">
+                Continue
             </button>
         </div>
 
