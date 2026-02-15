@@ -239,6 +239,7 @@ let gameState = {
     timerActive: false,
     timerExpired: false,
     prizeReduced: false,
+    timerStartedAt: null, // Track when timer was started for persistence
     
     // Puzzle tracking
     solvedPuzzles: [],
@@ -248,6 +249,7 @@ let gameState = {
     wrongAttempts: 0,
     hintsUsed: 0,
     puzzleAttempts: {}, // { puzzleId: count }
+    currentPhaseWrongAttempts: 0, // Reset per phase/puzzle
     
     // Brute force protection
     recentAttempts: [], // timestamps
@@ -401,8 +403,15 @@ function advancePhase() {
     const currentPhase = getCurrentPhase();
     const nextPhaseId = currentPhase.nextPhase;
     
+    console.log('🔧 advancePhase called, current:', currentPhase.id, 'next:', nextPhaseId);
+    
+    // Reset wrong attempt counters for new phase
+    gameState.currentPhaseWrongAttempts = 0;
+    gameState.puzzleAttempts = {}; // Reset per-puzzle attempts
+    
     if (nextPhaseId === 'chase') {
         // Transition to chase mode
+        console.log('🔧 Transitioning to chase mode');
         initiateChaseMode();
     } else if (PHASES[nextPhaseId]) {
         PHASES[nextPhaseId].unlocked = true;
@@ -410,12 +419,16 @@ function advancePhase() {
         gameState.currentPuzzleId = null;
         saveState();
         
+        console.log('🔧 Advanced to phase:', nextPhaseId);
+        
         // Check for warning screen before phase 3
         if (currentPhase.nextPhase === 'phase3' && PHASES.phase3.warningFirst) {
             showScreen('warning');
         } else {
             updateInvestigationUI();
         }
+    } else {
+        console.error('🔧 Unknown next phase:', nextPhaseId);
     }
 }
 
@@ -714,6 +727,8 @@ function initGame() {
     // Try to load saved state
     const savedExists = loadState();
     
+    console.log('🔧 initGame - savedExists:', savedExists, 'timerActive:', gameState.timerActive, 'screen:', gameState.currentScreen);
+    
     // URL params should override saved state
     if (window.DEBUG_MODE || urlScreen === 'investigation') {
         gameState.currentScreen = urlScreen;
@@ -726,20 +741,34 @@ function initGame() {
     // Setup event listeners
     setupEventListeners();
     
-    // Determine starting screen
+    // Determine starting screen - KEY FIX: If game was in progress, skip intro!
     if (gameState.chaseActive) {
+        // Chase mode in progress
         showScreen('chase');
         startChaseTimer();
+    } else if (savedExists && gameState.timerActive && gameState.investigationTimeLeft > 0 && gameState.investigationTimeLeft < CONFIG.INVESTIGATION_TIME) {
+        // Game was in progress (timer started and time has elapsed) - skip intro, resume investigation
+        console.log('🔧 Resuming in-progress game, skipping intro');
+        showScreen('investigation');
+        startInvestigationTimer();
     } else if (gameState.currentScreen === 'investigation') {
         // URL params or saved state wants investigation
         showScreen('investigation');
         if (gameState.timerActive) {
             startInvestigationTimer();
         }
-    } else if (savedExists && gameState.currentScreen !== 'resort') {
-        // Resume from saved state
+    } else if (savedExists && gameState.currentScreen !== 'resort' && gameState.currentScreen !== 'thief-intro') {
+        // Resume from saved state (not intro screens)
         showScreen(gameState.currentScreen);
         if (gameState.timerActive) {
+            startInvestigationTimer();
+        }
+    } else if (savedExists && gameState.solvedPuzzles.length > 0) {
+        // Player has solved puzzles but ended up on intro - resume investigation
+        console.log('🔧 Player has progress, resuming investigation');
+        showScreen('investigation');
+        if (gameState.timerActive || gameState.investigationTimeLeft < CONFIG.INVESTIGATION_TIME) {
+            gameState.timerActive = true;
             startInvestigationTimer();
         }
     } else {

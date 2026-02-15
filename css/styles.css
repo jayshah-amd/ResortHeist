@@ -316,9 +316,10 @@ input, select, textarea, button {
     padding: var(--spacing-md);
     display: flex;
     flex-direction: column;
-    max-height: calc(100vh - 200px);
-    max-height: calc(100dvh - 200px);
+    max-height: calc(100vh - 140px);
+    max-height: calc(100dvh - 140px);
     overflow: hidden;
+    min-height: 400px;
 }
 
 .terminal-header {
@@ -350,6 +351,8 @@ input, select, textarea, button {
     background: var(--bg-dark);
     display: flex;
     flex-direction: column;
+    height: 100%;
+    overflow: hidden;
 }
 
 .investigation-header {
@@ -361,6 +364,7 @@ input, select, textarea, button {
     align-items: center;
     justify-content: space-between;
     flex-shrink: 0;
+    z-index: 10;
 }
 
 .case-badge {
@@ -428,6 +432,7 @@ input, select, textarea, button {
     border: 1px solid rgba(16, 185, 129, 0.2);
     border-radius: var(--radius-md);
     padding: var(--spacing-md);
+    flex-shrink: 0;
 }
 
 .investigation-footer {
@@ -938,6 +943,8 @@ input, select, textarea, button {
     border-radius: var(--radius-lg);
     padding: var(--spacing-md);
     transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
 }
 
 .puzzle-input-card.solved {
@@ -957,6 +964,10 @@ input, select, textarea, button {
     font-size: 0.9rem;
     font-weight: bold;
     color: var(--accent);
+}
+
+.puzzle-input-card .solved-badge {
+    position: static;
 }
 
 /* Triple puzzle input row - large input, small button */

@@ -189,12 +189,15 @@ function showThiefIntroMessage(messageContainer, beginButton) {
     const message = THIEF_MESSAGES[currentMessageIndex];
     const isLastMessage = currentMessageIndex === THIEF_MESSAGES.length - 1;
     
+    let typingComplete = false;
+    
     thiefTyped = new Typed(messageContainer, {
         strings: [message],
         typeSpeed: 15, // Faster typing
         showCursor: true,
         cursorChar: '█',
         onComplete: () => {
+            typingComplete = true;
             // Show appropriate button based on message
             if (isLastMessage) {
                 // Last message: show Continue + Generate Teams buttons
@@ -206,6 +209,50 @@ function showThiefIntroMessage(messageContainer, beginButton) {
             playSound('reveal');
         }
     });
+    
+    // Add tap/click to skip typing animation
+    const skipHandler = (e) => {
+        if (!typingComplete && thiefTyped) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Complete the typing immediately
+            thiefTyped.stop();
+            messageContainer.innerHTML = message;
+            typingComplete = true;
+            
+            // Destroy typed instance
+            thiefTyped.destroy();
+            thiefTyped = null;
+            
+            // Show appropriate buttons
+            if (isLastMessage) {
+                showTeamSelectionButtons(messageContainer, beginButton);
+            } else {
+                showContinueButton(messageContainer, beginButton);
+            }
+            playSound('reveal');
+            
+            // Remove this handler
+            document.removeEventListener('click', skipHandler, true);
+            document.removeEventListener('touchstart', skipHandler, true);
+        }
+    };
+    
+    // Add skip listener after a small delay to prevent immediate triggering
+    setTimeout(() => {
+        document.addEventListener('click', skipHandler, true);
+        document.addEventListener('touchstart', skipHandler, true);
+        
+        // Clean up listener when typing completes
+        const cleanup = setInterval(() => {
+            if (typingComplete) {
+                document.removeEventListener('click', skipHandler, true);
+                document.removeEventListener('touchstart', skipHandler, true);
+                clearInterval(cleanup);
+            }
+        }, 100);
+    }, 500);
 }
 
 function showContinueButton(messageContainer, beginButton) {
@@ -1159,6 +1206,7 @@ function setupEventListeners() {
     // Team Selection Buttons
     const genderBtn = document.getElementById('btn-teams-gender');
     const randomBtn = document.getElementById('btn-teams-random');
+    const keepBtn = document.getElementById('btn-teams-keep');
     
     if (genderBtn) {
         genderBtn.addEventListener('click', () => {
@@ -1168,6 +1216,10 @@ function setupEventListeners() {
             genderBtn.classList.add('ring-2', 'ring-white');
             randomBtn.classList.add('opacity-50');
             randomBtn.disabled = true;
+            if (keepBtn) {
+                keepBtn.classList.add('opacity-50');
+                keepBtn.disabled = true;
+            }
         });
     }
     
@@ -1178,10 +1230,28 @@ function setupEventListeners() {
             genderBtn.classList.add('opacity-50');
             genderBtn.disabled = true;
             randomBtn.classList.add('ring-2', 'ring-white');
+            if (keepBtn) {
+                keepBtn.classList.add('opacity-50');
+                keepBtn.disabled = true;
+            }
             
             const teams = window.GameEngine.runRandomDraft();
             window.GameEngine.gameState.teams = teams;
             window.GameEngine.animateDraft(teams);
+        });
+    }
+    
+    // Keep Current Teams button - goes straight to ready section
+    if (keepBtn) {
+        keepBtn.addEventListener('click', () => {
+            playSound('click');
+            window.GameEngine.gameState.teamDivisionMethod = 'keep';
+            document.getElementById('ready-section').classList.remove('hidden');
+            keepBtn.classList.add('ring-2', 'ring-white');
+            genderBtn.classList.add('opacity-50');
+            genderBtn.disabled = true;
+            randomBtn.classList.add('opacity-50');
+            randomBtn.disabled = true;
         });
     }
     
