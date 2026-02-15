@@ -216,18 +216,16 @@ function showThiefIntroMessage(messageContainer, beginButton) {
             e.preventDefault();
             e.stopPropagation();
             
-            // Stop the typed animation
-            thiefTyped.stop();
-            
-            // Show the complete message instantly (not partially typed)
-            messageContainer.innerHTML = message;
-            
-            // Mark as complete
+            // Mark as complete first to prevent re-entry
             typingComplete = true;
             
-            // Destroy typed instance and clear cursor
-            thiefTyped.destroy();
+            // Store reference and destroy the Typed instance first
+            const typedInstance = thiefTyped;
             thiefTyped = null;
+            typedInstance.destroy();
+            
+            // Now set the complete message (after destroy to prevent interference)
+            messageContainer.innerHTML = message;
             
             // Show appropriate buttons
             if (isLastMessage) {
@@ -604,14 +602,15 @@ function updateInvestigationUI() {
                 setupContinueButton();
             }
             
-        } else if (puzzle) {
-            // Standard single puzzle display (Phase 3)
-            const isSolved = gameState.solvedPuzzles.includes(puzzle.id);
+        } else if (gameState.currentPhase === 'phase3') {
+            // Phase 3 - Identity reveal (special handling since puzzle may be null when solved)
+            const phase3Puzzle = PUZZLES['thiefIdentity'];
+            const isSolved = gameState.solvedPuzzles.includes('thiefIdentity');
             
             puzzleContent.innerHTML = `
-                <h3 class="text-lg font-bold text-accent mb-sm">${puzzle.title}</h3>
+                <h3 class="text-lg font-bold text-accent mb-sm">${phase3Puzzle.title}</h3>
                 <div class="text-gray-300 text-sm whitespace-pre-line leading-relaxed">
-                    ${puzzle.description}
+                    ${phase3Puzzle.description}
                 </div>
                 ${isSolved ? `
                     <div class="mt-md text-center">
@@ -633,6 +632,16 @@ function updateInvestigationUI() {
                     });
                 }
             }
+        } else if (puzzle) {
+            // Standard single puzzle display (fallback for other phases)
+            const isSolved = gameState.solvedPuzzles.includes(puzzle.id);
+            
+            puzzleContent.innerHTML = `
+                <h3 class="text-lg font-bold text-accent mb-sm">${puzzle.title}</h3>
+                <div class="text-gray-300 text-sm whitespace-pre-line leading-relaxed">
+                    ${puzzle.description}
+                </div>
+            `;
         }
     }
     
@@ -1322,6 +1331,14 @@ function setupEventListeners() {
     
     // Photo Buttons (Chase Mode)
     setupPhotoListeners();
+    
+    // Hint Button
+    const hintBtn = document.getElementById('btn-hint');
+    if (hintBtn) {
+        hintBtn.addEventListener('click', () => {
+            handleHintRequest();
+        });
+    }
 }
 
 function checkBothTeamsReady() {
@@ -1465,26 +1482,103 @@ function handleAnswerSubmit() {
     input.focus();
 }
 
-// ==================== HINT & SKIP MODALS ====================
-function showHintOffer() {
-    const { gameState, getCurrentPuzzle, applyPenalty, saveState } = window.GameEngine;
-    const puzzle = getCurrentPuzzle();
+// ==================== HINT SYSTEM ====================
+
+// Main hint button handler - determines which hint flow to show based on phase
+function handleHintRequest() {
+    const { gameState, getCurrentPhase, PUZZLES, isHintUsed } = window.GameEngine;
+    const phase = getCurrentPhase();
     
-    if (!puzzle || !puzzle.hint) return;
+    playSound('click');
+    
+    // Phase 3 has no hints
+    if (gameState.currentPhase === 'phase3') {
+        showNoHintAvailable();
+        return;
+    }
+    
+    // Phase 1 - simple riddle hint (single hint for the phase)
+    if (phase.isDualPuzzle) {
+        // Check if hint already used for Phase 1 riddle
+        if (isHintUsed('phase1_riddle')) {
+            showHintAlreadyUsed(PUZZLES['location1'].hint);
+        } else {
+            showPhase1HintConfirm();
+        }
+        return;
+    }
+    
+    // Phase 2 and Lockbox - ask for puzzle number
+    if (phase.isTriplePuzzle || phase.isLockboxPuzzle) {
+        showPuzzleNumberInput();
+        return;
+    }
+}
+
+// Show "No hints available" for Phase 3
+function showNoHintAvailable() {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content text-center">
+            <h3 class="text-warning font-mono text-lg mb-4">🚫 No Hints Available</h3>
+            <p class="text-gray-400 text-sm mb-4">
+                You have all the clues you need. Figure it out yourself!
+            </p>
+            <button id="btn-close-no-hint" class="w-full btn btn-ghost">
+                OK
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    document.getElementById('btn-close-no-hint').addEventListener('click', () => {
+        modal.remove();
+    });
+}
+
+// Show hint that was already used (free to view again)
+function showHintAlreadyUsed(hintText) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content text-center">
+            <h3 class="text-accent font-mono text-lg mb-4">💡 Hint (Already Used)</h3>
+            <p class="text-white text-lg mb-4">${hintText}</p>
+            <p class="text-gray-500 text-xs mb-4">No additional penalty - you already used this hint.</p>
+            <button id="btn-close-hint" class="w-full btn btn-ghost">
+                Got It
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    document.getElementById('btn-close-hint').addEventListener('click', () => {
+        modal.remove();
+    });
+}
+
+// Phase 1: Simple confirmation for riddle hint
+function showPhase1HintConfirm() {
+    const { PUZZLES, applyPenalty, markHintUsed, CONFIG } = window.GameEngine;
+    const hintCost = CONFIG.PENALTIES.HINT_COST;
     
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
     modal.innerHTML = `
         <div class="modal-content text-center">
-            <h3 class="text-thief-neon font-mono text-lg mb-4">💡 Need a Hint?</h3>
+            <h3 class="text-accent font-mono text-lg mb-4">💡 Need a Hint?</h3>
             <p class="text-gray-400 text-sm mb-4">
-                A hint will cost you <span class="text-thief-red font-bold">30 seconds</span>.
+                This will cost you <span class="text-danger font-bold">${hintCost} seconds</span>.
             </p>
-            <div class="space-y-2">
-                <button id="btn-accept-hint" class="w-full bg-thief-neon hover:bg-green-400 text-thief-dark font-bold py-3 rounded-lg transition-all">
-                    Show Hint (-30s)
+            <p class="text-gray-500 text-xs mb-4">Are you sure?</p>
+            <div class="flex flex-col gap-sm">
+                <button id="btn-accept-hint" class="btn btn-primary">
+                    Yes, Show Hint (-${hintCost}s)
                 </button>
-                <button id="btn-decline-hint" class="w-full bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-lg transition-all">
+                <button id="btn-decline-hint" class="btn btn-ghost">
                     No Thanks
                 </button>
             </div>
@@ -1495,14 +1589,16 @@ function showHintOffer() {
     
     document.getElementById('btn-accept-hint').addEventListener('click', () => {
         applyPenalty('hint');
-        gameState.hintsUsed++;
-        saveState();
+        markHintUsed('phase1_riddle');
+        playSound('reveal');
         
+        // Show the actual hint
+        const hint = PUZZLES['location1'].hint;
         modal.innerHTML = `
             <div class="modal-content text-center">
-                <h3 class="text-thief-neon font-mono text-lg mb-4">💡 HINT</h3>
-                <p class="text-white text-lg">${puzzle.hint}</p>
-                <button id="btn-close-hint" class="mt-4 w-full bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-lg transition-all">
+                <h3 class="text-accent font-mono text-lg mb-4">💡 HINT</h3>
+                <p class="text-white text-lg mb-4">${hint}</p>
+                <button id="btn-close-hint" class="w-full btn btn-ghost">
                     Got It
                 </button>
             </div>
@@ -1516,6 +1612,149 @@ function showHintOffer() {
     document.getElementById('btn-decline-hint').addEventListener('click', () => {
         modal.remove();
     });
+}
+
+// Phase 2/Lockbox: Show input for puzzle number
+function showPuzzleNumberInput() {
+    const { gameState, getCurrentPhase, getValidPuzzleNumbers } = window.GameEngine;
+    const phase = getCurrentPhase();
+    const validNumbers = getValidPuzzleNumbers();
+    const maxNum = Math.max(...validNumbers);
+    
+    const puzzleType = phase.isLockboxPuzzle ? 'lockbox' : 'puzzle';
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content text-center">
+            <h3 class="text-accent font-mono text-lg mb-4">💡 Which Puzzle?</h3>
+            <p class="text-gray-400 text-sm mb-4">
+                Enter the number of the ${puzzleType} you need help with:
+            </p>
+            <input type="number" id="hint-puzzle-number" 
+                class="input text-center text-xl font-bold mb-4" 
+                min="1" max="${maxNum}" 
+                placeholder="1-${maxNum}"
+                inputmode="numeric"
+                style="width: 120px; margin: 0 auto; display: block;">
+            <p id="hint-error" class="text-danger text-sm mb-4 hidden"></p>
+            <div class="flex flex-col gap-sm">
+                <button id="btn-submit-puzzle-num" class="btn btn-primary">
+                    Continue
+                </button>
+                <button id="btn-cancel-hint" class="btn btn-ghost">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    const input = document.getElementById('hint-puzzle-number');
+    const errorEl = document.getElementById('hint-error');
+    
+    // Focus input
+    setTimeout(() => input.focus(), 100);
+    
+    document.getElementById('btn-submit-puzzle-num').addEventListener('click', () => {
+        const num = parseInt(input.value);
+        
+        if (isNaN(num) || !validNumbers.includes(num)) {
+            errorEl.textContent = `Invalid number. Enter ${validNumbers.join(', ')}.`;
+            errorEl.classList.remove('hidden');
+            playSound('wrong');
+            return;
+        }
+        
+        // Valid number - proceed to confirmation
+        modal.remove();
+        showPuzzleHintConfirm(num);
+    });
+    
+    // Also submit on Enter
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            document.getElementById('btn-submit-puzzle-num').click();
+        }
+    });
+    
+    document.getElementById('btn-cancel-hint').addEventListener('click', () => {
+        modal.remove();
+    });
+}
+
+// Show confirmation for specific puzzle number
+function showPuzzleHintConfirm(puzzleNumber) {
+    const { gameState, getPuzzleByNumber, isHintUsed, markHintUsed, applyPenalty, CONFIG, PUZZLE_NUMBER_MAP } = window.GameEngine;
+    
+    const puzzle = getPuzzleByNumber(puzzleNumber);
+    
+    if (!puzzle) {
+        showNoHintAvailable();
+        return;
+    }
+    
+    // Check if hint already used
+    if (isHintUsed(puzzle.id)) {
+        showHintAlreadyUsed(puzzle.hint);
+        return;
+    }
+    
+    const hintCost = CONFIG.PENALTIES.HINT_COST;
+    const puzzleType = gameState.currentPhase === 'lockbox' ? 'Lockbox' : 'Puzzle';
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content text-center">
+            <h3 class="text-accent font-mono text-lg mb-4">💡 ${puzzleType} #${puzzleNumber}</h3>
+            <p class="text-gray-400 text-sm mb-4">
+                This will cost you <span class="text-danger font-bold">${hintCost} seconds</span>.
+            </p>
+            <p class="text-gray-500 text-xs mb-4">Are you sure?</p>
+            <div class="flex flex-col gap-sm">
+                <button id="btn-accept-hint" class="btn btn-primary">
+                    Yes, Show Hint (-${hintCost}s)
+                </button>
+                <button id="btn-decline-hint" class="btn btn-ghost">
+                    No Thanks
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    document.getElementById('btn-accept-hint').addEventListener('click', () => {
+        applyPenalty('hint');
+        markHintUsed(puzzle.id);
+        playSound('reveal');
+        
+        // Show the actual hint
+        modal.innerHTML = `
+            <div class="modal-content text-center">
+                <h3 class="text-accent font-mono text-lg mb-4">💡 HINT - ${puzzleType} #${puzzleNumber}</h3>
+                <p class="text-white text-lg mb-4">${puzzle.hint}</p>
+                <button id="btn-close-hint" class="w-full btn btn-ghost">
+                    Got It
+                </button>
+            </div>
+        `;
+        
+        document.getElementById('btn-close-hint').addEventListener('click', () => {
+            modal.remove();
+        });
+    });
+    
+    document.getElementById('btn-decline-hint').addEventListener('click', () => {
+        modal.remove();
+    });
+}
+
+// Legacy function - kept for backwards compatibility with auto-offer
+function showHintOffer() {
+    handleHintRequest();
 }
 
 function showSkipOffer() {

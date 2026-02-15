@@ -51,9 +51,10 @@ const PUZZLES = {
     location1: {
         id: 'location1',
         phase: 1,
+        puzzleNumber: null, // Phase 1 uses single hint for the riddle
         title: 'Location 1',
         description: `Two places where North and South will be staying together for the duration of your vacation.`,
-        hint: 'Think about where you\'re staying...',
+        hint: 'Who\'s from the North? Who\'s from the South? Where are they staying?',
         answers: ['611'],
         thiefReaction: 'One location found. Not bad.',
         evidence: 'Location 1 verified'
@@ -62,6 +63,7 @@ const PUZZLES = {
     location2: {
         id: 'location2',
         phase: 1,
+        puzzleNumber: null, // Phase 1 uses single hint for the riddle
         title: 'Location 2',
         description: `Two places where North and South will be staying together for the duration of your vacation.`,
         hint: 'Think about where you\'re staying...',
@@ -71,12 +73,14 @@ const PUZZLES = {
     },
     
     // Phase 2 - Triple Threat (any order) - Physical room puzzles
+    // puzzleNumber matches the number on the physical puzzle
     puzzle1: {
         id: 'puzzle1',
         phase: 2,
+        puzzleNumber: 1,
         title: 'Puzzle 1',
         description: '', // Physical puzzle - no description needed
-        hint: 'Think about animated movies...',
+        hint: 'I like to get funny with my bunny',
         answers: ['SIMBA'],
         thiefReaction: 'One down. Lucky guess.',
         evidence: 'Puzzle 1 solved'
@@ -85,9 +89,10 @@ const PUZZLES = {
     puzzle2: {
         id: 'puzzle2',
         phase: 2,
+        puzzleNumber: 2,
         title: 'Puzzle 2',
         description: '', // Physical puzzle - no description needed
-        hint: 'It\'s a number...',
+        hint: 'These clocks aren\'t telling time...',
         answers: ['516'],
         thiefReaction: 'Another one? Not bad.',
         evidence: 'Puzzle 2 solved'
@@ -96,9 +101,10 @@ const PUZZLES = {
     puzzle3: {
         id: 'puzzle3',
         phase: 2,
+        puzzleNumber: 3,
         title: 'Puzzle 3',
         description: '', // Physical puzzle - no description needed
-        hint: 'Think about countries...',
+        hint: 'Look at all the places our lovely couple have been to!',
         answers: ['MEXICO'],
         thiefReaction: 'Fine, you got that one too.',
         evidence: 'Puzzle 3 solved'
@@ -108,9 +114,10 @@ const PUZZLES = {
     lockbox1: {
         id: 'lockbox1',
         phase: 2.5,
+        puzzleNumber: 1,
         title: 'Lockbox 1',
         description: '',
-        hint: 'Think about home numbers...',
+        hint: 'From their MCs to their PC',
         answers: ['2717'],
         thiefReaction: null,
         evidence: 'Lockbox 1 opened'
@@ -119,28 +126,78 @@ const PUZZLES = {
     lockbox2: {
         id: 'lockbox2',
         phase: 2.5,
+        puzzleNumber: 2,
         title: 'Lockbox 2',
         description: '',
-        hint: 'Think about home numbers...',
+        hint: 'From their MCs to their PC',
         answers: ['1738'],
         thiefReaction: null,
         evidence: 'Lockbox 2 opened'
     },
     
-    // Phase 3 - Identity reveal
+    // Phase 3 - Identity reveal (NO HINT AVAILABLE)
     thiefIdentity: {
         id: 'thiefIdentity',
         phase: 3,
+        puzzleNumber: null,
         title: 'The Thief\'s Identity',
         description: `You have all the clues you need to figure out who I am. But do you have the intelligence?
 
 WHO AM I?`,
-        hint: 'The thief is someone in your group with a 3-letter name...',
+        hint: null, // No hint for the final puzzle
         answers: ['JAY'],
         thiefReaction: null, // Special handling for final reveal
         evidence: 'Thief identified'
     }
 };
+
+// ==================== HINT SYSTEM ====================
+// Mapping from physical puzzle numbers to puzzle IDs by phase
+const PUZZLE_NUMBER_MAP = {
+    phase2: {
+        1: 'puzzle1',
+        2: 'puzzle2',
+        3: 'puzzle3'
+    },
+    lockbox: {
+        1: 'lockbox1',
+        2: 'lockbox2'
+    }
+};
+
+// Get puzzle by number for current phase
+function getPuzzleByNumber(number) {
+    const phase = gameState.currentPhase;
+    const map = PUZZLE_NUMBER_MAP[phase];
+    if (!map) return null;
+    
+    const puzzleId = map[number];
+    if (!puzzleId) return null;
+    
+    return PUZZLES[puzzleId];
+}
+
+// Check if hint has been used for a puzzle
+function isHintUsed(puzzleId) {
+    return gameState.usedHints.includes(puzzleId);
+}
+
+// Mark hint as used
+function markHintUsed(puzzleId) {
+    if (!gameState.usedHints.includes(puzzleId)) {
+        gameState.usedHints.push(puzzleId);
+        gameState.hintsUsed++;
+        saveState();
+    }
+}
+
+// Get valid puzzle numbers for current phase
+function getValidPuzzleNumbers() {
+    const phase = gameState.currentPhase;
+    const map = PUZZLE_NUMBER_MAP[phase];
+    if (!map) return [];
+    return Object.keys(map).map(n => parseInt(n));
+}
 
 // ==================== GAME PHASES ====================
 const PHASES = {
@@ -250,6 +307,9 @@ let gameState = {
     hintsUsed: 0,
     puzzleAttempts: {}, // { puzzleId: count }
     currentPhaseWrongAttempts: 0, // Reset per phase/puzzle
+    
+    // Hint tracking - which puzzles have had their hints revealed
+    usedHints: [], // Array of puzzle IDs that have had hints shown
     
     // Brute force protection
     recentAttempts: [], // timestamps
@@ -408,6 +468,7 @@ function advancePhase() {
     // Reset wrong attempt counters for new phase
     gameState.currentPhaseWrongAttempts = 0;
     gameState.puzzleAttempts = {}; // Reset per-puzzle attempts
+    gameState.recentAttempts = []; // Clear rate limiting for new phase
     
     if (nextPhaseId === 'chase') {
         // Transition to chase mode
@@ -797,6 +858,7 @@ window.GameEngine = {
     PUZZLES,
     PHASES,
     TAUNTS,
+    PUZZLE_NUMBER_MAP,
     gameState,
     saveState,
     loadState,
@@ -816,5 +878,10 @@ window.GameEngine = {
     animateDraft,
     generateChaseLink,
     calculateStats,
-    initiateChaseMode
+    initiateChaseMode,
+    // Hint system
+    getPuzzleByNumber,
+    isHintUsed,
+    markHintUsed,
+    getValidPuzzleNumbers
 };
