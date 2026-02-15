@@ -1,6 +1,6 @@
 /**
  * Audio System for Case #7734
- * Handles all sound effects using Web Audio API and Audio elements
+ * Dark, mysterious sound effects for a thief mystery game
  */
 
 // Audio context for Web Audio API sounds
@@ -16,59 +16,59 @@ function initAudio() {
 }
 
 // ==================== SOUND DEFINITIONS ====================
-// Simple synthesized sounds using Web Audio API
+// Dark, mysterious synthesized sounds
 
 const SOUNDS = {
-    // UI Sounds
-    click: { type: 'click', frequency: 800, duration: 0.05 },
+    // UI Click - Low, subtle thud
+    click: { type: 'thud', frequency: 80, duration: 0.08 },
     
-    // Correct/Success
-    correct: { type: 'success', frequencies: [523, 659, 784], duration: 0.15 },
+    // Correct/Success - Deep, satisfying confirmation
+    correct: { type: 'darkSuccess', frequencies: [150, 200, 300], duration: 0.2 },
     
-    // Wrong/Error  
-    wrong: { type: 'error', frequency: 200, duration: 0.2 },
+    // Wrong/Error - Ominous low buzz
+    wrong: { type: 'ominous', frequency: 60, duration: 0.4 },
     
-    // Typo
-    typo: { type: 'beep', frequency: 440, duration: 0.1 },
+    // Typo - Low warning tone
+    typo: { type: 'warningTone', frequency: 180, duration: 0.15 },
     
-    // Blocked
-    blocked: { type: 'buzz', frequency: 100, duration: 0.15 },
+    // Blocked - Deep rumble
+    blocked: { type: 'rumble', frequency: 40, duration: 0.25 },
     
-    // Reveal/Transition - Ascending tone (message received feel)
-    reveal: { type: 'ascending', frequencies: [440, 554, 659, 880], duration: 0.12 },
+    // Reveal/Transition - Mysterious descending whisper
+    reveal: { type: 'mysterious', frequencies: [400, 300, 200, 150], duration: 0.15 },
     
-    // Start Game
-    start: { type: 'fanfare', frequencies: [523, 659, 784, 1047], duration: 0.1 },
+    // Start Game - Dark dramatic chord
+    start: { type: 'darkChord', frequencies: [100, 150, 200], duration: 0.3 },
     
-    // Timer Warning
-    warning: { type: 'alarm', frequency: 880, duration: 0.3, repeat: 3 },
+    // Timer Warning - Low pulsing alarm
+    warning: { type: 'darkAlarm', frequency: 120, duration: 0.4, repeat: 2 },
     
-    // Critical Warning
-    critical: { type: 'alarm', frequency: 1000, duration: 0.2, repeat: 5 },
+    // Critical Warning - Intense low pulse
+    critical: { type: 'darkAlarm', frequency: 80, duration: 0.3, repeat: 3 },
     
-    // Tick
-    tick: { type: 'tick', frequency: 1000, duration: 0.03 },
+    // Tick - Deep subtle click
+    tick: { type: 'deepTick', frequency: 100, duration: 0.05 },
     
-    // Penalty
-    penalty: { type: 'descend', startFreq: 600, endFreq: 200, duration: 0.3 },
+    // Penalty - Sinister descending tone
+    penalty: { type: 'sinister', startFreq: 200, endFreq: 50, duration: 0.5 },
     
-    // Countdown
-    countdown: { type: 'beep', frequency: 600, duration: 0.15 },
+    // Countdown - Heavy beat
+    countdown: { type: 'heavyBeat', frequency: 80, duration: 0.2 },
     
-    // Victory
-    victory: { type: 'victory', frequencies: [523, 659, 784, 1047, 1319], duration: 0.2 },
+    // Victory - Dark triumphant
+    victory: { type: 'darkTriumph', frequencies: [100, 150, 200, 250, 300], duration: 0.25 },
     
-    // Time's Up
-    timesup: { type: 'defeat', frequencies: [400, 300, 200], duration: 0.3 },
+    // Time's Up - Ominous drone
+    timesup: { type: 'drone', frequencies: [60, 80, 100], duration: 0.6 },
     
-    // Draft Pick
-    draft: { type: 'pop', frequency: 500, duration: 0.08 },
+    // Draft Pick - Deep pop
+    draft: { type: 'deepPop', frequency: 120, duration: 0.1 },
     
-    // Capture Photo
-    capture: { type: 'shutter', frequency: 1200, duration: 0.05 },
+    // Capture Photo - Heavy shutter
+    capture: { type: 'heavyShutter', frequency: 200, duration: 0.08 },
     
-    // Share
-    share: { type: 'whoosh', startFreq: 200, endFreq: 1000, duration: 0.2 }
+    // Share - Dark whoosh
+    share: { type: 'darkWhoosh', startFreq: 80, endFreq: 300, duration: 0.3 }
 };
 
 // ==================== SOUND GENERATION ====================
@@ -89,252 +89,174 @@ function playSound(soundName) {
         }
         
         switch (sound.type) {
-            case 'click':
-                playClick(ctx, sound);
+            case 'thud':
+                playThud(ctx, sound);
                 break;
-            case 'success':
-                playArpeggio(ctx, sound.frequencies, sound.duration, 'sine');
+            case 'darkSuccess':
+                playDarkArpeggio(ctx, sound.frequencies, sound.duration);
                 break;
-            case 'error':
-                playBuzz(ctx, sound);
+            case 'ominous':
+                playOminous(ctx, sound);
                 break;
-            case 'beep':
-                playBeep(ctx, sound.frequency, sound.duration);
+            case 'warningTone':
+                playWarningTone(ctx, sound);
                 break;
-            case 'buzz':
-                playBuzz(ctx, sound);
+            case 'rumble':
+                playRumble(ctx, sound);
                 break;
-            case 'sweep':
-                playSweep(ctx, sound.startFreq, sound.endFreq, sound.duration);
+            case 'mysterious':
+                playMysterious(ctx, sound.frequencies, sound.duration);
                 break;
-            case 'ascending':
-                playAscending(ctx, sound.frequencies, sound.duration);
+            case 'darkChord':
+                playDarkChord(ctx, sound.frequencies, sound.duration);
                 break;
-            case 'fanfare':
-                playArpeggio(ctx, sound.frequencies, sound.duration, 'square');
+            case 'darkAlarm':
+                playDarkAlarm(ctx, sound);
                 break;
-            case 'alarm':
-                playAlarm(ctx, sound);
+            case 'deepTick':
+                playDeepTick(ctx, sound);
                 break;
-            case 'tick':
-                playBeep(ctx, sound.frequency, sound.duration);
+            case 'sinister':
+                playSinister(ctx, sound);
                 break;
-            case 'descend':
-                playSweep(ctx, sound.startFreq, sound.endFreq, sound.duration);
+            case 'heavyBeat':
+                playHeavyBeat(ctx, sound);
                 break;
-            case 'victory':
-                playVictory(ctx, sound);
+            case 'darkTriumph':
+                playDarkTriumph(ctx, sound);
                 break;
-            case 'defeat':
-                playArpeggio(ctx, sound.frequencies, sound.duration, 'sawtooth');
+            case 'drone':
+                playDrone(ctx, sound);
                 break;
-            case 'pop':
-                playPop(ctx, sound);
+            case 'deepPop':
+                playDeepPop(ctx, sound);
                 break;
-            case 'shutter':
-                playShutter(ctx);
+            case 'heavyShutter':
+                playHeavyShutter(ctx);
                 break;
-            case 'whoosh':
-                playSweep(ctx, sound.startFreq, sound.endFreq, sound.duration);
+            case 'darkWhoosh':
+                playDarkWhoosh(ctx, sound);
                 break;
             default:
-                playBeep(ctx, 440, 0.1);
+                playThud(ctx, { frequency: 80, duration: 0.1 });
         }
     } catch (e) {
         console.warn('Audio playback failed:', e);
     }
 }
 
-function playBeep(ctx, frequency, duration) {
+// Deep thud for UI clicks
+function playThud(ctx, sound) {
     const oscillator = ctx.createOscillator();
     const gainNode = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
     
-    oscillator.connect(gainNode);
+    oscillator.connect(filter);
+    filter.connect(gainNode);
     gainNode.connect(ctx.destination);
     
     oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
-    
-    gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
-    
-    oscillator.start(ctx.currentTime);
-    oscillator.stop(ctx.currentTime + duration);
-}
-
-function playClick(ctx, sound) {
-    const oscillator = ctx.createOscillator();
-    const gainNode = ctx.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(ctx.destination);
-    
-    oscillator.type = 'square';
     oscillator.frequency.setValueAtTime(sound.frequency, ctx.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + sound.duration);
     
-    gainNode.gain.setValueAtTime(0.2, ctx.currentTime);
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(200, ctx.currentTime);
+    
+    gainNode.gain.setValueAtTime(0.4, ctx.currentTime);
     gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + sound.duration);
     
     oscillator.start(ctx.currentTime);
     oscillator.stop(ctx.currentTime + sound.duration);
 }
 
-function playBuzz(ctx, sound) {
+// Dark success arpeggio - low and satisfying
+function playDarkArpeggio(ctx, frequencies, noteDuration) {
+    frequencies.forEach((freq, index) => {
+        const startTime = ctx.currentTime + (index * noteDuration * 0.6);
+        
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        
+        oscillator.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        oscillator.type = 'triangle';
+        oscillator.frequency.setValueAtTime(freq, startTime);
+        
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(400, startTime);
+        
+        gainNode.gain.setValueAtTime(0, startTime);
+        gainNode.gain.linearRampToValueAtTime(0.35, startTime + 0.02);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + noteDuration);
+        
+        oscillator.start(startTime);
+        oscillator.stop(startTime + noteDuration);
+    });
+}
+
+// Ominous wrong answer sound
+function playOminous(ctx, sound) {
     const oscillator = ctx.createOscillator();
+    const oscillator2 = ctx.createOscillator();
     const gainNode = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
     
-    oscillator.connect(gainNode);
+    oscillator.connect(filter);
+    oscillator2.connect(filter);
+    filter.connect(gainNode);
     gainNode.connect(ctx.destination);
     
     oscillator.type = 'sawtooth';
     oscillator.frequency.setValueAtTime(sound.frequency, ctx.currentTime);
     
-    gainNode.gain.setValueAtTime(0.2, ctx.currentTime);
+    oscillator2.type = 'sawtooth';
+    oscillator2.frequency.setValueAtTime(sound.frequency * 1.02, ctx.currentTime); // Slight detune for thickness
+    
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(150, ctx.currentTime);
+    
+    gainNode.gain.setValueAtTime(0, ctx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.05);
+    gainNode.gain.setValueAtTime(0.3, ctx.currentTime + sound.duration * 0.5);
     gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + sound.duration);
     
     oscillator.start(ctx.currentTime);
+    oscillator2.start(ctx.currentTime);
     oscillator.stop(ctx.currentTime + sound.duration);
+    oscillator2.stop(ctx.currentTime + sound.duration);
 }
 
-function playSweep(ctx, startFreq, endFreq, duration) {
+// Warning tone for typos
+function playWarningTone(ctx, sound) {
     const oscillator = ctx.createOscillator();
     const gainNode = ctx.createGain();
     
     oscillator.connect(gainNode);
     gainNode.connect(ctx.destination);
     
-    oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(startFreq, ctx.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(endFreq, ctx.currentTime + duration);
-    
-    gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
-    
-    oscillator.start(ctx.currentTime);
-    oscillator.stop(ctx.currentTime + duration);
-}
-
-function playArpeggio(ctx, frequencies, noteDuration, waveType = 'sine') {
-    frequencies.forEach((freq, index) => {
-        const startTime = ctx.currentTime + (index * noteDuration);
-        
-        const oscillator = ctx.createOscillator();
-        const gainNode = ctx.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(ctx.destination);
-        
-        oscillator.type = waveType;
-        oscillator.frequency.setValueAtTime(freq, startTime);
-        
-        gainNode.gain.setValueAtTime(0.25, startTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + noteDuration);
-        
-        oscillator.start(startTime);
-        oscillator.stop(startTime + noteDuration);
-    });
-}
-
-function playAscending(ctx, frequencies, noteDuration) {
-    // Classic "message received" ascending tone with slight overlap
-    const totalDuration = frequencies.length * noteDuration;
-    
-    frequencies.forEach((freq, index) => {
-        const startTime = ctx.currentTime + (index * noteDuration * 0.7); // Slight overlap
-        
-        const oscillator = ctx.createOscillator();
-        const gainNode = ctx.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(ctx.destination);
-        
-        oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(freq, startTime);
-        
-        // Smooth envelope
-        gainNode.gain.setValueAtTime(0, startTime);
-        gainNode.gain.linearRampToValueAtTime(0.25, startTime + 0.02);
-        gainNode.gain.linearRampToValueAtTime(0.2, startTime + noteDuration * 0.5);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + noteDuration);
-        
-        oscillator.start(startTime);
-        oscillator.stop(startTime + noteDuration);
-    });
-}
-
-function playAlarm(ctx, sound) {
-    for (let i = 0; i < (sound.repeat || 1); i++) {
-        const startTime = ctx.currentTime + (i * (sound.duration + 0.05));
-        
-        const oscillator = ctx.createOscillator();
-        const gainNode = ctx.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(ctx.destination);
-        
-        oscillator.type = 'square';
-        oscillator.frequency.setValueAtTime(sound.frequency, startTime);
-        
-        gainNode.gain.setValueAtTime(0.2, startTime);
-        gainNode.gain.setValueAtTime(0.2, startTime + sound.duration * 0.5);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + sound.duration);
-        
-        oscillator.start(startTime);
-        oscillator.stop(startTime + sound.duration);
-    }
-}
-
-function playVictory(ctx, sound) {
-    // Play ascending arpeggio with sustained final note
-    sound.frequencies.forEach((freq, index) => {
-        const startTime = ctx.currentTime + (index * sound.duration);
-        
-        const oscillator = ctx.createOscillator();
-        const gainNode = ctx.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(ctx.destination);
-        
-        oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(freq, startTime);
-        
-        const noteDuration = index === sound.frequencies.length - 1 ? 0.5 : sound.duration;
-        
-        gainNode.gain.setValueAtTime(0.3, startTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + noteDuration);
-        
-        oscillator.start(startTime);
-        oscillator.stop(startTime + noteDuration);
-    });
-}
-
-function playPop(ctx, sound) {
-    const oscillator = ctx.createOscillator();
-    const gainNode = ctx.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(ctx.destination);
-    
-    oscillator.type = 'sine';
+    oscillator.type = 'triangle';
     oscillator.frequency.setValueAtTime(sound.frequency, ctx.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(sound.frequency * 2, ctx.currentTime + sound.duration * 0.3);
-    oscillator.frequency.exponentialRampToValueAtTime(sound.frequency * 0.5, ctx.currentTime + sound.duration);
+    oscillator.frequency.exponentialRampToValueAtTime(sound.frequency * 0.7, ctx.currentTime + sound.duration);
     
-    gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+    gainNode.gain.setValueAtTime(0.25, ctx.currentTime);
     gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + sound.duration);
     
     oscillator.start(ctx.currentTime);
     oscillator.stop(ctx.currentTime + sound.duration);
 }
 
-function playShutter(ctx) {
-    // Create a quick burst of white noise
-    const bufferSize = ctx.sampleRate * 0.05;
+// Deep rumble for blocked
+function playRumble(ctx, sound) {
+    const bufferSize = ctx.sampleRate * sound.duration;
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
     const data = buffer.getChannelData(0);
     
+    // Create low rumble noise
     for (let i = 0; i < bufferSize; i++) {
-        data[i] = Math.random() * 2 - 1;
+        data[i] = (Math.random() * 2 - 1) * Math.sin(i / 50);
     }
     
     const source = ctx.createBufferSource();
@@ -342,17 +264,320 @@ function playShutter(ctx) {
     const filter = ctx.createBiquadFilter();
     
     source.buffer = buffer;
-    filter.type = 'highpass';
-    filter.frequency.setValueAtTime(2000, ctx.currentTime);
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(sound.frequency, ctx.currentTime);
     
     source.connect(filter);
     filter.connect(gainNode);
     gainNode.connect(ctx.destination);
     
     gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + sound.duration);
     
     source.start(ctx.currentTime);
+}
+
+// Mysterious descending reveal
+function playMysterious(ctx, frequencies, noteDuration) {
+    frequencies.forEach((freq, index) => {
+        const startTime = ctx.currentTime + (index * noteDuration * 0.5);
+        
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        
+        oscillator.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(freq, startTime);
+        
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(freq * 2, startTime);
+        filter.frequency.exponentialRampToValueAtTime(freq * 0.5, startTime + noteDuration);
+        
+        gainNode.gain.setValueAtTime(0, startTime);
+        gainNode.gain.linearRampToValueAtTime(0.2, startTime + 0.02);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + noteDuration);
+        
+        oscillator.start(startTime);
+        oscillator.stop(startTime + noteDuration);
+    });
+}
+
+// Dark chord for start
+function playDarkChord(ctx, frequencies, duration) {
+    frequencies.forEach((freq) => {
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        
+        oscillator.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        oscillator.type = 'triangle';
+        oscillator.frequency.setValueAtTime(freq, ctx.currentTime);
+        
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(300, ctx.currentTime);
+        
+        gainNode.gain.setValueAtTime(0, ctx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 0.05);
+        gainNode.gain.setValueAtTime(0.2, ctx.currentTime + duration * 0.7);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+        
+        oscillator.start(ctx.currentTime);
+        oscillator.stop(ctx.currentTime + duration);
+    });
+}
+
+// Dark pulsing alarm
+function playDarkAlarm(ctx, sound) {
+    for (let i = 0; i < (sound.repeat || 1); i++) {
+        const startTime = ctx.currentTime + (i * (sound.duration + 0.1));
+        
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        
+        oscillator.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        oscillator.type = 'sawtooth';
+        oscillator.frequency.setValueAtTime(sound.frequency, startTime);
+        oscillator.frequency.setValueAtTime(sound.frequency * 0.8, startTime + sound.duration * 0.5);
+        
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(200, startTime);
+        
+        gainNode.gain.setValueAtTime(0, startTime);
+        gainNode.gain.linearRampToValueAtTime(0.25, startTime + 0.02);
+        gainNode.gain.setValueAtTime(0.25, startTime + sound.duration * 0.5);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + sound.duration);
+        
+        oscillator.start(startTime);
+        oscillator.stop(startTime + sound.duration);
+    }
+}
+
+// Deep tick
+function playDeepTick(ctx, sound) {
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+    
+    oscillator.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(sound.frequency, ctx.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(50, ctx.currentTime + sound.duration);
+    
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(200, ctx.currentTime);
+    
+    gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + sound.duration);
+    
+    oscillator.start(ctx.currentTime);
+    oscillator.stop(ctx.currentTime + sound.duration);
+}
+
+// Sinister descending penalty
+function playSinister(ctx, sound) {
+    const oscillator = ctx.createOscillator();
+    const oscillator2 = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+    
+    oscillator.connect(filter);
+    oscillator2.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    
+    oscillator.type = 'sawtooth';
+    oscillator.frequency.setValueAtTime(sound.startFreq, ctx.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(sound.endFreq, ctx.currentTime + sound.duration);
+    
+    oscillator2.type = 'sawtooth';
+    oscillator2.frequency.setValueAtTime(sound.startFreq * 0.5, ctx.currentTime);
+    oscillator2.frequency.exponentialRampToValueAtTime(sound.endFreq * 0.5, ctx.currentTime + sound.duration);
+    
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(300, ctx.currentTime);
+    filter.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + sound.duration);
+    
+    gainNode.gain.setValueAtTime(0, ctx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.05);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + sound.duration);
+    
+    oscillator.start(ctx.currentTime);
+    oscillator2.start(ctx.currentTime);
+    oscillator.stop(ctx.currentTime + sound.duration);
+    oscillator2.stop(ctx.currentTime + sound.duration);
+}
+
+// Heavy beat for countdown
+function playHeavyBeat(ctx, sound) {
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+    
+    oscillator.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(sound.frequency, ctx.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + sound.duration);
+    
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(150, ctx.currentTime);
+    
+    gainNode.gain.setValueAtTime(0.5, ctx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + sound.duration);
+    
+    oscillator.start(ctx.currentTime);
+    oscillator.stop(ctx.currentTime + sound.duration);
+}
+
+// Dark triumph for victory
+function playDarkTriumph(ctx, sound) {
+    sound.frequencies.forEach((freq, index) => {
+        const startTime = ctx.currentTime + (index * sound.duration * 0.5);
+        
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        
+        oscillator.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        oscillator.type = 'triangle';
+        oscillator.frequency.setValueAtTime(freq, startTime);
+        
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(400, startTime);
+        
+        const noteDuration = index === sound.frequencies.length - 1 ? 0.8 : sound.duration;
+        
+        gainNode.gain.setValueAtTime(0, startTime);
+        gainNode.gain.linearRampToValueAtTime(0.3, startTime + 0.03);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + noteDuration);
+        
+        oscillator.start(startTime);
+        oscillator.stop(startTime + noteDuration);
+    });
+}
+
+// Ominous drone for time's up
+function playDrone(ctx, sound) {
+    sound.frequencies.forEach((freq) => {
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        
+        oscillator.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        oscillator.type = 'sawtooth';
+        oscillator.frequency.setValueAtTime(freq, ctx.currentTime);
+        
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(150, ctx.currentTime);
+        
+        gainNode.gain.setValueAtTime(0, ctx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 0.1);
+        gainNode.gain.setValueAtTime(0.2, ctx.currentTime + sound.duration * 0.7);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + sound.duration);
+        
+        oscillator.start(ctx.currentTime);
+        oscillator.stop(ctx.currentTime + sound.duration);
+    });
+}
+
+// Deep pop for draft
+function playDeepPop(ctx, sound) {
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+    
+    oscillator.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(sound.frequency, ctx.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(sound.frequency * 0.3, ctx.currentTime + sound.duration);
+    
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(300, ctx.currentTime);
+    
+    gainNode.gain.setValueAtTime(0.4, ctx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + sound.duration);
+    
+    oscillator.start(ctx.currentTime);
+    oscillator.stop(ctx.currentTime + sound.duration);
+}
+
+// Heavy shutter for photo
+function playHeavyShutter(ctx) {
+    const bufferSize = ctx.sampleRate * 0.08;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
+    }
+    
+    const source = ctx.createBufferSource();
+    const gainNode = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+    
+    source.buffer = buffer;
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(400, ctx.currentTime);
+    
+    source.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    
+    gainNode.gain.setValueAtTime(0.4, ctx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+    
+    source.start(ctx.currentTime);
+}
+
+// Dark whoosh for share
+function playDarkWhoosh(ctx, sound) {
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+    
+    oscillator.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(sound.startFreq, ctx.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(sound.endFreq, ctx.currentTime + sound.duration);
+    
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(200, ctx.currentTime);
+    filter.frequency.exponentialRampToValueAtTime(500, ctx.currentTime + sound.duration);
+    
+    gainNode.gain.setValueAtTime(0, ctx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.05);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + sound.duration);
+    
+    oscillator.start(ctx.currentTime);
+    oscillator.stop(ctx.currentTime + sound.duration);
 }
 
 // ==================== AUDIO CONTROL ====================

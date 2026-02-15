@@ -957,17 +957,23 @@ input, select, textarea, button {
     justify-content: space-between;
     align-items: center;
     margin-bottom: var(--spacing-sm);
+    gap: 0.5rem;
 }
 
 .puzzle-input-card .puzzle-label {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: bold;
     color: var(--accent);
+    flex-shrink: 1;
+    min-width: 0;
 }
 
 .puzzle-input-card .solved-badge {
     position: static;
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    white-space: nowrap;
 }
 
 /* Triple puzzle input row - large input, small button */

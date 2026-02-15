@@ -210,18 +210,22 @@ function showThiefIntroMessage(messageContainer, beginButton) {
         }
     });
     
-    // Add tap/click to skip typing animation
+    // Add tap/click to skip typing animation - shows full message instantly
     const skipHandler = (e) => {
         if (!typingComplete && thiefTyped) {
             e.preventDefault();
             e.stopPropagation();
             
-            // Complete the typing immediately
+            // Stop the typed animation
             thiefTyped.stop();
+            
+            // Show the complete message instantly (not partially typed)
             messageContainer.innerHTML = message;
+            
+            // Mark as complete
             typingComplete = true;
             
-            // Destroy typed instance
+            // Destroy typed instance and clear cursor
             thiefTyped.destroy();
             thiefTyped = null;
             
@@ -602,12 +606,33 @@ function updateInvestigationUI() {
             
         } else if (puzzle) {
             // Standard single puzzle display (Phase 3)
+            const isSolved = gameState.solvedPuzzles.includes(puzzle.id);
+            
             puzzleContent.innerHTML = `
                 <h3 class="text-lg font-bold text-accent mb-sm">${puzzle.title}</h3>
                 <div class="text-gray-300 text-sm whitespace-pre-line leading-relaxed">
                     ${puzzle.description}
                 </div>
+                ${isSolved ? `
+                    <div class="mt-md text-center">
+                        <p class="text-success font-bold mb-sm">✓ THIEF IDENTIFIED!</p>
+                        <button id="btn-continue-to-chase" class="btn btn-success">
+                            Begin the Chase →
+                        </button>
+                    </div>
+                ` : ''}
             `;
+            
+            // Add continue button listener if puzzle is solved
+            if (isSolved) {
+                const continueBtn = document.getElementById('btn-continue-to-chase');
+                if (continueBtn) {
+                    continueBtn.addEventListener('click', () => {
+                        playSound('start');
+                        window.GameEngine.advancePhase();
+                    });
+                }
+            }
         }
     }
     
@@ -1370,9 +1395,16 @@ function handleAnswerSubmit() {
         const remaining = getUnsolvedPuzzles();
         if (remaining.length === 0) {
             // Phase complete!
-            setTimeout(() => {
-                advancePhase();
-            }, 2000);
+            // For Phase 3, show continue button instead of auto-advancing
+            if (gameState.currentPhase === 'phase3') {
+                setTimeout(() => {
+                    updateInvestigationUI(); // Will show "Begin the Chase" button
+                }, 1500);
+            } else {
+                setTimeout(() => {
+                    advancePhase();
+                }, 2000);
+            }
         } else {
             // Update UI for next puzzle
             setTimeout(() => {
