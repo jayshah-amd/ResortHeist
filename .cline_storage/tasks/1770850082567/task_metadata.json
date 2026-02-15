@@ -1,0 +1,754 @@
+{
+  "files_in_context": [
+    {
+      "path": "index.html",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770851079297,
+      "cline_edit_date": 1770851079297,
+      "user_edit_date": null
+    },
+    {
+      "path": "css/styles.css",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770851154730,
+      "cline_edit_date": 1770851154730,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770851259086,
+      "cline_edit_date": 1770851259086,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/timer.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770851303071,
+      "cline_edit_date": 1770851303071,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770851410932,
+      "cline_edit_date": 1770851410932,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/audio.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770851465365,
+      "cline_edit_date": 1770851465365,
+      "user_edit_date": null
+    },
+    {
+      "path": "index.html",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770851501595,
+      "cline_edit_date": 1770851501595,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770851533355,
+      "cline_edit_date": 1770851533355,
+      "user_edit_date": null
+    },
+    {
+      "path": "README.md",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770851581179,
+      "cline_edit_date": 1770851581179,
+      "user_edit_date": null
+    },
+    {
+      "path": "assets/.gitkeep",
+      "record_state": "active",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770851603489,
+      "cline_edit_date": 1770851603489,
+      "user_edit_date": null
+    },
+    {
+      "path": "index.html",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770851768513,
+      "cline_edit_date": 1770851768513,
+      "user_edit_date": null
+    },
+    {
+      "path": "tailwind.config.js",
+      "record_state": "active",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770852075935,
+      "cline_edit_date": 1770852075935,
+      "user_edit_date": null
+    },
+    {
+      "path": "css/tailwind-input.css",
+      "record_state": "active",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770852092443,
+      "cline_edit_date": 1770852092443,
+      "user_edit_date": null
+    },
+    {
+      "path": "index.html",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770852302051,
+      "cline_edit_date": 1770852302051,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770852336218,
+      "cline_edit_date": 1770852336218,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "read_tool",
+      "cline_read_date": 1770852420044,
+      "cline_edit_date": 1770851259086,
+      "user_edit_date": null
+    },
+    {
+      "path": "index.html",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770852449213,
+      "cline_edit_date": 1770852449213,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/timer.js",
+      "record_state": "active",
+      "record_source": "read_tool",
+      "cline_read_date": 1770853222029,
+      "cline_edit_date": 1770851303071,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/audio.js",
+      "record_state": "stale",
+      "record_source": "read_tool",
+      "cline_read_date": 1770853242685,
+      "cline_edit_date": 1770851465365,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "read_tool",
+      "cline_read_date": 1770853264616,
+      "cline_edit_date": 1770852336218,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770853313265,
+      "cline_edit_date": 1770853313265,
+      "user_edit_date": null
+    },
+    {
+      "path": "css/styles.css",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770853450553,
+      "cline_edit_date": 1770853450553,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "read_tool",
+      "cline_read_date": 1770854847132,
+      "cline_edit_date": 1770851259086,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770854874932,
+      "cline_edit_date": 1770854874932,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770854896321,
+      "cline_edit_date": 1770854896321,
+      "user_edit_date": null
+    },
+    {
+      "path": "css/styles.css",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770854994460,
+      "cline_edit_date": 1770854994460,
+      "user_edit_date": null
+    },
+    {
+      "path": "index.html",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770855067703,
+      "cline_edit_date": 1770855067703,
+      "user_edit_date": null
+    },
+    {
+      "path": "README.md",
+      "record_state": "active",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770855198105,
+      "cline_edit_date": 1770855198105,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "read_tool",
+      "cline_read_date": 1770860815855,
+      "cline_edit_date": 1770853313265,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770860855341,
+      "cline_edit_date": 1770860855341,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/audio.js",
+      "record_state": "stale",
+      "record_source": "read_tool",
+      "cline_read_date": 1770860873498,
+      "cline_edit_date": 1770851465365,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/audio.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770860896254,
+      "cline_edit_date": 1770860896254,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/audio.js",
+      "record_state": "active",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770860922778,
+      "cline_edit_date": 1770860922778,
+      "user_edit_date": null
+    },
+    {
+      "path": "css/styles.css",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770860944229,
+      "cline_edit_date": 1770860944229,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "read_tool",
+      "cline_read_date": 1770861442166,
+      "cline_edit_date": 1770854896321,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770861466734,
+      "cline_edit_date": 1770861466734,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770861487839,
+      "cline_edit_date": 1770861487839,
+      "user_edit_date": null
+    },
+    {
+      "path": "index.html",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770863023915,
+      "cline_edit_date": 1770863023915,
+      "user_edit_date": null
+    },
+    {
+      "path": "css/styles.css",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770863051362,
+      "cline_edit_date": 1770863051362,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770863073356,
+      "cline_edit_date": 1770863073356,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "read_tool",
+      "cline_read_date": 1770957176237,
+      "cline_edit_date": 1770863073356,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "user_edited",
+      "cline_read_date": 1770957176237,
+      "cline_edit_date": 1770863073356,
+      "user_edit_date": 1770957189111
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770957254295,
+      "cline_edit_date": 1770957254295,
+      "user_edit_date": 1770957189111
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "read_tool",
+      "cline_read_date": 1770957270392,
+      "cline_edit_date": 1770861487839,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770957303872,
+      "cline_edit_date": 1770957303872,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770957329419,
+      "cline_edit_date": 1770957329419,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770957382829,
+      "cline_edit_date": 1770957382829,
+      "user_edit_date": 1770957189111
+    },
+    {
+      "path": "css/styles.css",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770957412069,
+      "cline_edit_date": 1770957412069,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770957932612,
+      "cline_edit_date": 1770957932612,
+      "user_edit_date": 1770957189111
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770958081540,
+      "cline_edit_date": 1770958081540,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770959120709,
+      "cline_edit_date": 1770959120709,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770959142974,
+      "cline_edit_date": 1770959142974,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770959176455,
+      "cline_edit_date": 1770959176455,
+      "user_edit_date": 1770957189111
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770959197940,
+      "cline_edit_date": 1770959197940,
+      "user_edit_date": 1770957189111
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770961268067,
+      "cline_edit_date": 1770961268067,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770961291863,
+      "cline_edit_date": 1770961291863,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770961325913,
+      "cline_edit_date": 1770961325913,
+      "user_edit_date": 1770957189111
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770961350859,
+      "cline_edit_date": 1770961350859,
+      "user_edit_date": 1770957189111
+    },
+    {
+      "path": "css/styles.css",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770961373140,
+      "cline_edit_date": 1770961373140,
+      "user_edit_date": null
+    },
+    {
+      "path": "css/styles.css",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770961393054,
+      "cline_edit_date": 1770961393054,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770963783335,
+      "cline_edit_date": 1770963783335,
+      "user_edit_date": 1770957189111
+    },
+    {
+      "path": "css/styles.css",
+      "record_state": "active",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770963806180,
+      "cline_edit_date": 1770963806180,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770964233856,
+      "cline_edit_date": 1770964233856,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770964261569,
+      "cline_edit_date": 1770964261569,
+      "user_edit_date": 1770957189111
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770964616802,
+      "cline_edit_date": 1770964616802,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770964639614,
+      "cline_edit_date": 1770964639614,
+      "user_edit_date": 1770957189111
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770964929337,
+      "cline_edit_date": 1770964929337,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770964950590,
+      "cline_edit_date": 1770964950590,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770964973076,
+      "cline_edit_date": 1770964973076,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770964996308,
+      "cline_edit_date": 1770964996308,
+      "user_edit_date": 1770957189111
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770965186784,
+      "cline_edit_date": 1770965186784,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770965211873,
+      "cline_edit_date": 1770965211873,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770966689879,
+      "cline_edit_date": 1770966689879,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770966723507,
+      "cline_edit_date": 1770966723507,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770966759309,
+      "cline_edit_date": 1770966759309,
+      "user_edit_date": 1770957189111
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770966805534,
+      "cline_edit_date": 1770966805534,
+      "user_edit_date": 1770957189111
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770966842117,
+      "cline_edit_date": 1770966842117,
+      "user_edit_date": 1770957189111
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770966870861,
+      "cline_edit_date": 1770966870861,
+      "user_edit_date": 1770957189111
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770966891837,
+      "cline_edit_date": 1770966891837,
+      "user_edit_date": 1770957189111
+    },
+    {
+      "path": "index.html",
+      "record_state": "stale",
+      "record_source": "read_tool",
+      "cline_read_date": 1770967565223,
+      "cline_edit_date": 1770863023915,
+      "user_edit_date": null
+    },
+    {
+      "path": "index.html",
+      "record_state": "active",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770967585951,
+      "cline_edit_date": 1770967585951,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "stale",
+      "record_source": "cline_edited",
+      "cline_read_date": 1770968648434,
+      "cline_edit_date": 1770968648434,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "user_edited",
+      "cline_read_date": 1770966891837,
+      "cline_edit_date": 1770966891837,
+      "user_edit_date": 1771088108855
+    },
+    {
+      "path": "js/game.js",
+      "record_state": "active",
+      "record_source": "cline_edited",
+      "cline_read_date": 1771088831379,
+      "cline_edit_date": 1771088831379,
+      "user_edit_date": null
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "stale",
+      "record_source": "read_tool",
+      "cline_read_date": 1771088842633,
+      "cline_edit_date": 1770966891837,
+      "user_edit_date": 1771088108855
+    },
+    {
+      "path": "js/screens.js",
+      "record_state": "active",
+      "record_source": "cline_edited",
+      "cline_read_date": 1771088879577,
+      "cline_edit_date": 1771088879577,
+      "user_edit_date": 1771088108855
+    }
+  ],
+  "model_usage": [
+    {
+      "ts": 1770850082595,
+      "model_id": "claude-opus-4-5-20251101",
+      "model_provider_id": "anthropic",
+      "mode": "plan"
+    },
+    {
+      "ts": 1770850962735,
+      "model_id": "claude-opus-4-5-20251101",
+      "model_provider_id": "anthropic",
+      "mode": "act"
+    },
+    {
+      "ts": 1770851970901,
+      "model_id": "claude-opus-4-5-20251101",
+      "model_provider_id": "anthropic",
+      "mode": "plan"
+    },
+    {
+      "ts": 1770852026926,
+      "model_id": "claude-opus-4-5-20251101",
+      "model_provider_id": "anthropic",
+      "mode": "act"
+    },
+    {
+      "ts": 1770855564392,
+      "model_id": "claude-opus-4-5-20251101",
+      "model_provider_id": "anthropic",
+      "mode": "plan"
+    },
+    {
+      "ts": 1770860802217,
+      "model_id": "claude-opus-4-5-20251101",
+      "model_provider_id": "anthropic",
+      "mode": "act"
+    },
+    {
+      "ts": 1770953548361,
+      "model_id": "claude-opus-4-5-20251101",
+      "model_provider_id": "anthropic",
+      "mode": "plan"
+    },
+    {
+      "ts": 1770957161105,
+      "model_id": "claude-opus-4-5-20251101",
+      "model_provider_id": "anthropic",
+      "mode": "act"
+    },
+    {
+      "ts": 1770960880119,
+      "model_id": "claude-opus-4-5-20251101",
+      "model_provider_id": "anthropic",
+      "mode": "plan"
+    },
+    {
+      "ts": 1770961232533,
+      "model_id": "claude-opus-4-5-20251101",
+      "model_provider_id": "anthropic",
+      "mode": "act"
+    }
+  ]
+}

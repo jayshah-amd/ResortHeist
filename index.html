@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0f0f1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Case #7734 | Investigation</title>
+    
+    <!-- Preconnect for fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="app">
+        
+        <!-- ==================== RESORT NOTICE ==================== -->
+        <div id="screen-resort" class="screen hidden">
+            <div class="resort-logo">🏨</div>
+            <h1 class="text-2xl font-bold text-center text-gold mb-sm">Bahia Principe Grand Tulum</h1>
+            <p class="text-center text-secondary text-sm mb-md">Excellence in Hospitality</p>
+            
+            <div class="notice-card">
+                <h2 class="text-lg font-bold">📋 GUEST NOTICE</h2>
+                <p class="text-sm mb-sm">Dear Valued Guests,</p>
+                <p class="text-sm mb-sm">We must inform you of an urgent matter. A VIP guest has reported a <strong>theft of significant valuables</strong> from their suite.</p>
+                <p class="text-sm mb-sm">Most unusually, the thief has left behind <strong>cryptic clues and puzzles</strong>, specifically requesting YOUR group to solve the case.</p>
+                
+                <div class="reward-box">
+                    <p class="text-sm font-bold">🎁 REWARD NOTICE</p>
+                    <p class="text-xs">Successfully identify the thief within the allotted time for a <strong>substantial reward</strong>.</p>
+                </div>
+                
+                <p class="text-xs text-muted" style="margin-top: 1rem; font-style: italic;">
+                    Legal Disclaimer: Participation is voluntary. The resort assumes no liability for emotional distress or competitive disputes.
+                </p>
+            </div>
+            
+            <button id="btn-accept-notice" class="btn btn-gold mt-auto">
+                Accept Investigation
+            </button>
+        </div>
+
+        <!-- ==================== THIEF INTRO ==================== -->
+        <div id="screen-thief-intro" class="screen hidden">
+            <div class="text-center mb-md">
+                <h1 class="text-3xl font-bold text-accent glitch-text">INCOMING</h1>
+                <p class="text-danger text-sm">⚠️ ENCRYPTED TRANSMISSION ⚠️</p>
+            </div>
+            
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <span class="terminal-dot" style="background: #ef4444;"></span>
+                    <span class="terminal-dot" style="background: #f59e0b;"></span>
+                    <span class="terminal-dot" style="background: #22c55e;"></span>
+                    <span class="text-muted text-xs" style="margin-left: auto;">terminal_v2.exe</span>
+                </div>
+                <div class="terminal-content">
+                    <p class="text-muted text-sm">> Establishing secure connection...</p>
+                    <p class="text-muted text-sm">> Connection established.</p>
+                    <p class="text-muted text-sm">> Incoming message from: <span class="text-danger">UNKNOWN</span></p>
+                    <div id="thief-message" class="mt-auto" style="margin-top: 1rem;"></div>
+                </div>
+            </div>
+            
+            <button id="btn-begin-game" class="btn btn-success hidden mt-auto">
+                > ACCEPT CHALLENGE_
+            </button>
+        </div>
+
+        <!-- ==================== INVESTIGATION ==================== -->
+        <div id="screen-investigation" class="screen hidden">
+            <div class="investigation-header">
+                <span class="case-badge">CASE #7734</span>
+                <span id="timer-display" class="timer-display">45:00</span>
+                <span class="status-dot"></span>
+            </div>
+            
+            <div class="investigation-content">
+                <!-- Thief Message Panel -->
+                <div id="thief-message-panel" class="message-panel">
+                    <div class="message-panel-header">
+                        <span>👤</span>
+                        <span>The Thief</span>
+                        <span id="evidence-counter" class="hidden" style="margin-left: auto; color: var(--success);">COLLECTED: 0/3</span>
+                    </div>
+                    <p id="current-thief-message" class="text-sm text-accent"></p>
+                </div>
+                
+                <!-- Puzzle Panel -->
+                <div class="puzzle-panel flex-1">
+                    <div id="puzzle-content">
+                        <!-- Puzzle content injected here -->
+                    </div>
+                </div>
+                
+                <!-- Evidence Panel - Collapsible -->
+                <div class="evidence-panel collapsible">
+                    <button id="evidence-toggle" class="evidence-header" type="button">
+                        <span class="text-sm font-bold text-success">📁 Evidence Collected</span>
+                        <span id="evidence-arrow" class="evidence-arrow">▼</span>
+                    </button>
+                    <div id="evidence-list" class="evidence-content collapsed">
+                        <p class="text-muted text-xs">No evidence collected yet...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="investigation-footer">
+                <div class="input-group">
+                    <input type="text" id="answer-input" class="input" placeholder="Enter your answer..." autocomplete="off" autocapitalize="off">
+                    <button id="btn-submit-answer" class="btn btn-primary">→</button>
+                </div>
+                <p id="answer-feedback" class="feedback-text text-center"></p>
+            </div>
+        </div>
+
+        <!-- ==================== WARNING SCREEN ==================== -->
+        <div id="screen-warning" class="screen hidden">
+            <div class="warning-icon">⚠️</div>
+            <h2 class="text-2xl font-bold text-danger mb-md">CRITICAL WARNING</h2>
+            
+            <div class="warning-card">
+                <p class="text-sm mb-md">The riddle you're about to solve will reveal the thief's identity.</p>
+                <p class="font-bold text-warning mb-md">DO NOT MOVE once you solve it.</p>
+                <p class="text-sm text-muted">Wait for further instructions.</p>
+            </div>
+            
+            <button id="btn-understand-warning" class="btn btn-danger mt-auto" style="max-width: 280px;">
+                I Understand, Continue
+            </button>
+        </div>
+
+        <!-- ==================== TEAM SELECTION ==================== -->
+        <div id="screen-teams" class="screen hidden">
+            <div class="thief-reveal-card mb-md">
+                <p class="text-sm text-muted">THE THIEF HAS BEEN IDENTIFIED</p>
+                <h2 class="text-3xl font-bold text-danger">🎭 JAY 🎭</h2>
+                <p class="text-sm text-muted">Prepare for the CHASE!</p>
+            </div>
+            
+            <h3 class="text-center text-lg font-bold mb-sm">Select Team Division</h3>
+            
+            <div class="flex gap-sm mb-md">
+                <button id="btn-teams-gender" class="btn btn-ghost flex-1">
+                    👫 Girls vs Guys
+                </button>
+                <button id="btn-teams-random" class="btn btn-ghost flex-1">
+                    🎲 Random Draft
+                </button>
+            </div>
+            
+            <div id="draft-results" class="team-grid hidden">
+                <div class="team-card team-blue">
+                    <h4 class="font-bold" style="color: #60a5fa;">Team Mitch</h4>
+                    <ul id="team1-list" class="text-sm" style="list-style: none; margin-top: 0.5rem;"></ul>
+                </div>
+                <div class="team-card team-pink">
+                    <h4 class="font-bold" style="color: #f472b6;">Team Melisa</h4>
+                    <ul id="team2-list" class="text-sm" style="list-style: none; margin-top: 0.5rem;"></ul>
+                </div>
+            </div>
+            
+            <div id="ready-section" class="hidden mt-auto">
+                <p class="text-center text-sm text-muted mb-sm">Both teams must confirm ready</p>
+                <div class="flex gap-sm">
+                    <button id="btn-ready-team1" class="btn btn-ghost flex-1" data-ready="false">
+                        Team Mitch<br><span class="text-xs">Tap when ready</span>
+                    </button>
+                    <button id="btn-ready-team2" class="btn btn-ghost flex-1" data-ready="false">
+                        Team Melisa<br><span class="text-xs">Tap when ready</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== CHASE MODE ==================== -->
+        <div id="screen-chase" class="screen hidden">
+            <div class="chase-header">
+                <span class="font-bold">🚨 CHASE MODE</span>
+                <span id="chase-timer" class="font-mono font-bold">20:00</span>
+            </div>
+            
+            <div class="chase-content">
+                <div class="target-card">
+                    <p class="text-sm text-muted">TARGET</p>
+                    <h2 class="text-2xl font-bold text-danger">JAY</h2>
+                    <p class="text-sm">Find and photograph the thief!</p>
+                </div>
+                
+                <div class="glass-card p-md">
+                    <h3 class="font-bold mb-sm">📸 Capture Evidence</h3>
+                    <input type="file" id="photo-input" accept="image/*" capture="environment" class="hidden">
+                    <div class="flex gap-sm">
+                        <button id="btn-take-photo" class="btn btn-primary flex-1">
+                            📷 Take Photo
+                        </button>
+                        <button id="btn-upload-photo" class="btn btn-ghost flex-1">
+                            📁 Upload
+                        </button>
+                    </div>
+                    
+                    <div id="photo-preview-container" class="hidden mt-sm">
+                        <img id="photo-preview" src="" alt="Preview">
+                        <div class="flex gap-sm mt-sm">
+                            <button id="btn-retake-photo" class="btn btn-ghost flex-1 text-sm">Retake</button>
+                            <button id="btn-share-photo" class="btn btn-success flex-1 text-sm">Share</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass-card p-md">
+                    <h3 class="font-bold mb-sm">🔗 Share This Link</h3>
+                    <div class="input-group">
+                        <input id="share-link" type="text" class="input text-xs" readonly>
+                        <button id="btn-copy-link" class="btn btn-ghost" style="width: auto;">📋</button>
+                    </div>
+                    <div class="flex justify-center mt-sm">
+                        <canvas id="qr-code" width="120" height="120"></canvas>
+                    </div>
+                    <button id="btn-whatsapp-share" class="btn btn-success mt-sm">
+                        📱 Share via WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== VICTORY ==================== -->
+        <div id="screen-victory" class="screen hidden">
+            <div class="victory-icon">🎉</div>
+            <h1 class="text-2xl font-bold text-success mb-sm">CASE CLOSED!</h1>
+            <p class="text-secondary mb-md">Congratulations, Detectives!</p>
+            
+            <div class="stats-card">
+                <h3 class="font-bold text-center mb-sm">📊 Final Report</h3>
+                <div class="stat-row">
+                    <span class="text-muted">Time Remaining</span>
+                    <span id="stat-time" class="font-mono text-success">--:--</span>
+                </div>
+                <div class="stat-row">
+                    <span class="text-muted">Puzzles Solved</span>
+                    <span id="stat-puzzles">-/-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="text-muted">Wrong Attempts</span>
+                    <span id="stat-wrong" class="text-danger">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="text-muted">Hints Used</span>
+                    <span id="stat-hints">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="text-muted">Perfect Run?</span>
+                    <span id="stat-perfect">-</span>
+                </div>
+                <div class="stat-row" style="border-bottom: none; padding-top: 0.75rem;">
+                    <span class="font-bold">Bonus Multiplier</span>
+                    <span id="stat-bonus" class="font-bold text-warning">1.0x</span>
+                </div>
+            </div>
+            
+            <button id="btn-play-again" class="btn btn-primary mt-auto" style="max-width: 280px;">
+                Play Again
+            </button>
+        </div>
+
+        <!-- ==================== TIME'S UP ==================== -->
+        <div id="screen-timesup" class="screen hidden">
+            <div style="font-size: 5rem;">⏰</div>
+            <h1 class="text-2xl font-bold text-danger mb-sm">TIME'S UP!</h1>
+            <p class="text-secondary mb-md">The thief is getting away...</p>
+            
+            <div class="glass-card p-md text-center" style="max-width: 280px;">
+                <p class="text-sm mb-sm">Your potential reward has been reduced by 50%</p>
+                <p class="text-xs text-muted">You may continue playing, but the clock has stopped.</p>
+            </div>
+            
+            <button id="btn-continue-anyway" class="btn btn-danger mt-auto" style="max-width: 280px;">
+                Continue Anyway
+            </button>
+        </div>
+
+        <!-- ==================== COUNTDOWN OVERLAY ==================== -->
+        <div id="countdown-overlay" class="hidden">
+            <span id="countdown-number" class="countdown-number text-accent">3</span>
+        </div>
+        
+    </div>
+
+    <!-- Scripts - load order matters -->
+    <script src="vendor/typed.umd.js"></script>
+    <script src="vendor/qrcode.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/timer.js"></script>
+    <script src="js/screens.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>

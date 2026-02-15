@@ -1,0 +1,22 @@
+{
+  "name": "mm-jnj-game",
+  "version": "1.0.0",
+  "description": "A mobile-first web game combining ARG (Alternate Reality Game), escape room, and heist mystery elements. Built for static hosting with pure HTML, CSS, and JavaScript.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "qrcode": "^1.5.4",
+    "qrcode-generator": "^2.0.4",
+    "tailwindcss": "^4.1.18",
+    "typed.js": "^3.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.18"
+  }
+}
